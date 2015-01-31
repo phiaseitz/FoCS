@@ -17,17 +17,17 @@
  *  Question 1
  *)
 
-let append (xs,ys) =  match xs,ys with 
+let rec append (xs,ys) =  match xs,ys with 
   | [],[] -> []
   | a::b,[] -> xs
   | [],c::d -> ys
-  | a::b,c::d -> xs @ ys;;
+  | a::b,c::d -> a::append(b,ys);;
   (*  http://stackoverflow.com/questions/8286001/in-ocaml-what-is-the-canonical-way-of-matching-against-multiple-arguments-of-a
   *)
   
 let rec flatten (xs) = match xs with 
   | [] -> [] 
-  | h::t -> h @ flatten (t);;
+  | h::t -> append(h,flatten (t));;
 
 let rec double (xs) = match xs with 
   | [] -> []
@@ -53,16 +53,32 @@ let rec setIn (elt,set) = match set with
 let rec setSub (set1,set2) = match set1, set2 with
   | [],[] -> true
   | [],h::t -> true
-  | h::t, [] -> false
+  | x::y, [] -> false
   | x::y, h::t -> setIn(x,set2) && setSub(y,set2);;
 
 let setEqual (set1,set2) = setSub(set1,set2) && setSub(set2,set1);;
-  failwith "Not implemented"
 
-let setUnion (set1,set2) = 
-  failwith "Not implemented"
+let rec setUnion (set1,set2) = match set1,set2 with
+  | [],[] -> []
+  | [], h::t -> if setIn(h,setUnion([],t)) then setUnion([],t) else h::setUnion([],t)
+  | x::y, [] -> if setIn(x,setUnion([],y)) then setUnion([],y) else x::setUnion([],y)
+  | x::y, h::t -> if setIn(x,setUnion([],set2)) then setUnion(y,set2) else setUnion(y, x::setUnion([],set2));;
 
-let setInter (set1,set2) = 
+let rec setInter (set1,set2) = match set1,set2 with
+  | [],[] -> []
+  | [], h::t -> set2
+  | x::y, [] -> set1
+  | x::y, h::t -> 
+    if (setIn(x,set2) && setIn(h,set1))
+      then setInter(y,t)
+    else  
+      if (setIn(x,set2) && !(setIn(h,set1)))
+        then setInter(y,set2)
+      else 
+        if (!setIn(x,set2) && setIn(h,set1))
+          then setInter(set1,t)
+        else 
+          x::h::setInter(y,t);;
   failwith "Not implemented"
 
 let setDiff (set1,set2) = 
