@@ -48,12 +48,15 @@ let rec last (xs) = match xs with
 let rec setIn (elt,set) = match set with 
   | [] -> false 
   | h::t -> (elt == h) || setIn(elt,t);;
-  failwith "Not implemented"
 
-let setSub (set1,set2) = 
-  failwith "Not implemented"
 
-let setEqual (set1,set2) = 
+let rec setSub (set1,set2) = match set1, set2 with
+  | [],[] -> true
+  | [],h::t -> true
+  | h::t, [] -> false
+  | x::y, h::t -> setIn(x,set2) && setSub(y,set2);;
+
+let setEqual (set1,set2) = setSub(set1,set2) && setSub(set2,set1);;
   failwith "Not implemented"
 
 let setUnion (set1,set2) = 
