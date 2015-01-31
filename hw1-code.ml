@@ -3,11 +3,11 @@
    Homework 1 code
 
 
-   Name:
+   Name: Sophia Seitz
 
-   Email:
+   Email: sophia.seitz@students.olin.edu
 
-   Comments:
+   Comments: 
 
  *)
 
@@ -17,19 +17,27 @@
  *  Question 1
  *)
 
-let append (xs,ys) =   
-  (* Replace with your implementation of append *)
-  failwith "Not implemented"
+let append (xs,ys) =  match xs,ys with 
+  | [],[] -> []
+  | a::b,[] -> xs
+  | [],c::d -> ys
+  | a::b,c::d -> xs @ ys;;
+  (*  http://stackoverflow.com/questions/8286001/in-ocaml-what-is-the-canonical-way-of-matching-against-multiple-arguments-of-a
+  *)
+  
+let rec flatten (xs) = match xs with 
+  | [] -> [] 
+  | h::t -> h @ flatten (t);;
 
+let rec double (xs) = match xs with 
+  | [] -> []
+  | h::t -> (2*h)::double(t);;
 
-let flatten (xs) = 
-  failwith "Not implemented"
-
-let double (xs) = 
-  failwith "Not implemented"
-
-let last (xs) = 
-  failwith "Not implemented"
+let rec last (xs) = match xs with 
+  | [] -> None
+  | h::t -> match t with 
+    | [] -> Some h
+    | x::y -> last(x::y);;
 
 
 
@@ -37,7 +45,9 @@ let last (xs) =
  *  Question 2 
  *)
 
-let setIn (elt,set) = 
+let rec setIn (elt,set) = match set with 
+  | [] -> false 
+  | h::t -> (elt == h) || setIn(elt,t);;
   failwith "Not implemented"
 
 let setSub (set1,set2) = 
