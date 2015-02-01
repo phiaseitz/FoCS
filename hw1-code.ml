@@ -65,27 +65,13 @@ let rec setUnion (set1,set2) = match set1,set2 with
   | x::y, h::t -> if setIn(x,setUnion([],set2)) then setUnion(y,set2) else setUnion(y, x::setUnion([],set2));;
 
 let rec setInter (set1,set2) = match set1,set2 with
-  | [],[] -> []
-  | [], h::t -> set2
-  | x::y, [] -> set1
-  | x::y, h::t -> 
-    if (setIn(x,set2) && setIn(h,set1))
-      then setInter(y,t)
-    else  
-      if (setIn(x,set2) && !(setIn(h,set1)))
-        then setInter(y,set2)
-      else 
-        if (!setIn(x,set2) && setIn(h,set1))
-          then setInter(set1,t)
-        else 
-          x::h::setInter(y,t);;
-  failwith "Not implemented"
+  | [],_ -> []
+  | _, [] -> []
+  | x::y, h::t -> if setIn(x,set2) then x::setInter(y,set2) else setInter(y,set2);;
 
-let setDiff (set1,set2) = 
-  failwith "Not implemented"
-
-let setSize (set) =
-  failwith "Not implemented"
+let rec setSize (set) = match set with
+  | [] -> 0
+  | h::t -> if setIn(h,t) then setSize(t) else 1+setSize(t);;
 
 
 (* 
@@ -99,6 +85,16 @@ let third = {num=1; den=3}
 let fourth = {num=1; den=4}
 
 let floatR (r) = float(r.num) /. float(r.den)
+
+let isDivisible (n,d) = if float(n/d) = float(n)/.float(d) then true else false
+
+let absInt (n) = if n >= 0 then n else -1*n
+
+let rec allPossFactors (n) = if n = 1 then [] else absInt(n)::allPossFactors(absInt(n)-1);;
+
+let rec getFactors (n, possFactors) = match possFactors with 
+ | [] -> []
+ | h::t -> if isDivisible(n,h) then h::getFactors(n,t) else getFactors(n,t);;
 
 let simplify (r) = 
   failwith "Not implemented"
