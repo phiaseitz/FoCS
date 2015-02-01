@@ -92,17 +92,31 @@ let absInt (n) = if n >= 0 then n else -1*n
 
 let rec allPossFactors (n) = if n = 1 then [] else absInt(n)::allPossFactors(absInt(n)-1);;
 
-let rec getFactors (n, possFactors) = match possFactors with 
+let rec getFactorsWithList (n, possFactors) = match possFactors with 
  | [] -> []
- | h::t -> if isDivisible(n,h) then h::getFactors(n,t) else getFactors(n,t);;
+ | h::t -> if isDivisible(n,h) then h::getFactorsWithList(n,t) else getFactorsWithList(n,t);;
+
+let rec getFactors(n) = getFactorsWithList(n,allPossFactors(n));;
+
+let rec recMax (x,l) = match l with
+  | [] -> x
+  | h::t -> if x>h then recMax(x,t) else recMax(h,t);;
+
+let maxList (l) = match l with 
+  | [] -> 0
+  | h::t -> recMax(h,t);;
+
+let findGCF (factors1, factors2) = maxList(setInter(factors1,factors2));;
 
 let simplify (r) = 
-  failwith "Not implemented"
+  if r.den > 0 
+    then  {num = (r.num/findGCF(getFactors(r.num),getFactors(r.den))); den = (r.den/findGCF(getFactors(r.num),getFactors(r.den)))}
+  else 
+    {num = (r.num/(-findGCF(getFactors(r.num),getFactors(r.den)))); den = (r.den/(-findGCF(getFactors(r.num),getFactors(r.den))))};;
 
-let addR (r1,r2) = 
-  failwith "Not implemented"
+let addR (r1,r2) = simplify({num = (r1.num*r2.den + r2.num*r1.den); den = (r1.den*r2.den)});;
 
-let multR (r1,r2) = 
+let multR (r1,r2) = simplify({num = (r1.num*r2.num); den = (r1.den*r2.den)});;
   failwith "Not implemented"
 
 type number = I of int
