@@ -18,7 +18,7 @@
  *)
 
 let rec append (xs,ys) =  match xs,ys with 
-  | [],[] -> []
+   [],[] -> []
   | a::b,[] -> xs
   | [],c::d -> ys
   | a::b,c::d -> a::append(b,ys);;
@@ -26,17 +26,17 @@ let rec append (xs,ys) =  match xs,ys with
   *)
   
 let rec flatten (xs) = match xs with 
-  | [] -> [] 
+   [] -> [] 
   | h::t -> append(h,flatten (t));;
 
 let rec double (xs) = match xs with 
-  | [] -> []
+   [] -> []
   | h::t -> (2*h)::double(t);;
 
 let rec last (xs) = match xs with 
-  | [] -> None
+   [] -> None
   | h::t -> match t with 
-    | [] -> Some h
+     [] -> Some h
     | x::y -> last(x::y);;
 
 
@@ -46,12 +46,12 @@ let rec last (xs) = match xs with
  *)
 
 let rec setIn (elt,set) = match set with 
-  | [] -> false 
+   [] -> false 
   | h::t -> (elt == h) || setIn(elt,t);;
 
 
 let rec setSub (set1,set2) = match set1, set2 with
-  | [],[] -> true
+   [],[] -> true
   | [],h::t -> true
   | x::y, [] -> false
   | x::y, h::t -> setIn(x,set2) && setSub(y,set2);;
@@ -59,18 +59,18 @@ let rec setSub (set1,set2) = match set1, set2 with
 let setEqual (set1,set2) = setSub(set1,set2) && setSub(set2,set1);;
 
 let rec setUnion (set1,set2) = match set1,set2 with
-  | [],[] -> []
+   [],[] -> []
   | [], h::t -> if setIn(h,setUnion([],t)) then setUnion([],t) else h::setUnion([],t)
   | x::y, [] -> if setIn(x,setUnion([],y)) then setUnion([],y) else x::setUnion([],y)
   | x::y, h::t -> if setIn(x,setUnion([],set2)) then setUnion(y,set2) else setUnion(y, x::setUnion([],set2));;
 
 let rec setInter (set1,set2) = match set1,set2 with
-  | [],_ -> []
+   [],_ -> []
   | _, [] -> []
   | x::y, h::t -> if setIn(x,set2) then x::setInter(y,set2) else setInter(y,set2);;
 
 let rec setSize (set) = match set with
-  | [] -> 0
+   [] -> 0
   | h::t -> if setIn(h,t) then setSize(t) else 1+setSize(t);;
 
 
@@ -93,17 +93,17 @@ let absInt (n) = if n >= 0 then n else -1*n
 let rec allPossFactors (n) = if n = 1 then [] else absInt(n)::allPossFactors(absInt(n)-1);;
 
 let rec getFactorsWithList (n, possFactors) = match possFactors with 
- | [] -> []
+  [] -> []
  | h::t -> if isDivisible(n,h) then h::getFactorsWithList(n,t) else getFactorsWithList(n,t);;
 
 let rec getFactors(n) = getFactorsWithList(n,allPossFactors(n));;
 
 let rec recMax (x,l) = match l with
-  | [] -> x
+   [] -> x
   | h::t -> if x>h then recMax(x,t) else recMax(h,t);;
 
 let maxList (l) = match l with 
-  | [] -> 0
+   [] -> 0
   | h::t -> recMax(h,t);;
 
 let findGCF (factors1, factors2) = maxList(setInter(factors1,factors2));;
@@ -117,13 +117,21 @@ let simplify (r) =
 let addR (r1,r2) = simplify({num = (r1.num*r2.den + r2.num*r1.den); den = (r1.den*r2.den)});;
 
 let multR (r1,r2) = simplify({num = (r1.num*r2.num); den = (r1.den*r2.den)});;
-  failwith "Not implemented"
 
 type number = I of int
             | R of rat
             | F of float
 
-let add (n1,n2) = 
+let add (n1,n2) = match n1,n2 with
+   I i, I j -> I (i+j)
+  | I i, F f -> F (float(i) +. f)
+  | I i, R r -> R (addR({num = i; den = 1}, r))
+  | F f, I i -> F (f +. float(i))
+  | F f, F l -> F (f +. l)
+  | F f, R r -> F (f +. floatR(r))
+  | R r, I i -> R (addR(r, {num = i; den = 1}))
+  | R r, F f -> F (floatR(r) +. f)
+  | R r, R a -> R (addR(r,a));;
   failwith "Not implemented"
 
 
