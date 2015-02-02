@@ -164,10 +164,21 @@ let rec vars (bexpr) = match bexpr with
    | Or (bE1,bE2) -> removeDuplicates(append(vars(bE1), vars(bE2)))
    | Not bE ->  removeDuplicates(vars(bE));;
 
-  failwith "Not implemented"
 
-let subst (bexpr,var,sub) = 
-  failwith "Not implemented"
+let rec subst (bexpr,var,sub) = match bexpr with 
+     Constant bC -> Constant bC
+   | Variable s -> if s = var then sub else Variable s
+   | And (bE1,bE2) -> And(subst(bE1, var, sub),subst(bE2, var, sub))
+   | Or (bE1,bE2) -> Or(subst(bE1, var, sub),subst(bE2, var, sub))
+   | Not bE ->  Not(subst(bE, var, sub));;
 
-let eval (bexpr) = 
-  failwith "Not implemented"
+
+let rec eval (bexpr) = match bexpr with 
+     Constant bC -> Some bC
+   | Variable s -> None
+   | And (bE1,bE2) -> if ((eval(bE1) = None) || (eval(bE1) = None)) then None else
+      if ((eval(bE1) = Some False) || (eval(bE1) = Some False)) then Some False else Some True
+   | Or (bE1,bE2) -> if ((eval(bE1) = None) || (eval(bE1) = None)) then None else
+      if ((eval(bE1) = Some True) || (eval(bE1) = Some True)) then Some True else Some False
+   | Not bE -> if eval(bE) = None then None else
+     if eval(bE) =  Some True then Some False else Some True;;
