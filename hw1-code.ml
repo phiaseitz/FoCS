@@ -7,7 +7,8 @@
 
    Email: sophia.seitz@students.olin.edu
 
-   Comments: 
+   Comments: #use "hw1-code.ml";;
+
 
  *)
 
@@ -47,7 +48,7 @@ let rec last (xs) = match xs with
 
 let rec setIn (elt,set) = match set with 
    [] -> false 
-  | h::t -> (elt == h) || setIn(elt,t);;
+  | h::t -> (elt = h) || setIn(elt,t);;
 
 
 let rec setSub (set1,set2) = match set1, set2 with
@@ -102,11 +103,11 @@ let rec recMax (x,l) = match l with
    [] -> x
   | h::t -> if x>h then recMax(x,t) else recMax(h,t);;
 
-let maxList (l) = match l with 
-   [] -> 0
+let maxCommonFactor (l) = match l with 
+   [] -> 1
   | h::t -> recMax(h,t);;
 
-let findGCF (factors1, factors2) = maxList(setInter(factors1,factors2));;
+let findGCF (factors1, factors2) = maxCommonFactor(setInter(factors1,factors2));;
 
 let simplify (r) = 
   if r.den > 0 
@@ -132,9 +133,6 @@ let add (n1,n2) = match n1,n2 with
   | R r, I i -> R (addR(r, {num = i; den = 1}))
   | R r, F f -> F (floatR(r) +. f)
   | R r, R a -> R (addR(r,a));;
-  failwith "Not implemented"
-
-
 
 (* 
  *  Optional question
@@ -155,7 +153,17 @@ let sample2 = Or(Not(Variable "a"),And(Variable "b",Constant(True)))
 
 let sample3 = And(Variable "a", Not(Variable "a"))
 
-let vars (bexpr) = 
+let rec removeDuplicates (l) = match l with 
+  [] -> []
+  | h::t -> if setIn(h,t) then removeDuplicates(t) else h::removeDuplicates(t);;
+
+let rec vars (bexpr) = match bexpr with 
+   Constant bC -> []
+   | Variable s -> [s]
+   | And (bE1,bE2) -> removeDuplicates(append(vars(bE1), vars(bE2)))
+   | Or (bE1,bE2) -> removeDuplicates(append(vars(bE1), vars(bE2)))
+   | Not bE ->  removeDuplicates(vars(bE));;
+
   failwith "Not implemented"
 
 let subst (bexpr,var,sub) = 
