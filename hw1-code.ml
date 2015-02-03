@@ -176,9 +176,9 @@ let rec subst (bexpr,var,sub) = match bexpr with
 let rec eval (bexpr) = match bexpr with 
      Constant bC -> Some bC
    | Variable s -> None
-   | And (bE1,bE2) -> if ((eval(bE1) = None) || (eval(bE1) = None)) then None else
-      if ((eval(bE1) = Some False) || (eval(bE1) = Some False)) then Some False else Some True
-   | Or (bE1,bE2) -> if ((eval(bE1) = None) || (eval(bE1) = None)) then None else
-      if ((eval(bE1) = Some True) || (eval(bE1) = Some True)) then Some True else Some False
+   | And (bE1,bE2) -> if ((eval(bE1) = None) || (eval(bE2) = None)) then None else
+      if ((eval(bE1) = Some False) || (eval(bE2) = Some False)) then Some False else Some True
+   | Or (bE1,bE2) -> if ((eval(bE1) = None) || (eval(bE2) = None)) then None else
+      if ((eval(bE1) = Some True) || (eval(bE2) = Some True)) then Some True else Some False
    | Not bE -> if eval(bE) = None then None else
      if eval(bE) =  Some True then Some False else Some True;;
