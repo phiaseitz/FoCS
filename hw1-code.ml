@@ -7,8 +7,14 @@
 
    Email: sophia.seitz@students.olin.edu
 
-   Comments: #use "hw1-code.ml";;
+   Comments: For this homework, I used this stack overflow link to learn
+   a little more about matchin in ocaml 
+   http://stackoverflow.com/questions/8286001/in-ocaml-what-is-the-canonical-way-of-matching-against-multiple-arguments-of-a
 
+   I also used this ocaml guide 
+   http://www.csc.villanova.edu/~dmatusze/resources/ocaml/ocaml.html
+
+   I also discussed this homework assignment with Anne Wilkinson
 
  *)
 
@@ -23,8 +29,6 @@ let rec append (xs,ys) =  match xs,ys with
   | a::b,[] -> xs
   | [],c::d -> ys
   | a::b,c::d -> a::append(b,ys);;
-  (*  http://stackoverflow.com/questions/8286001/in-ocaml-what-is-the-canonical-way-of-matching-against-multiple-arguments-of-a
-  *)
   
 let rec flatten (xs) = match xs with 
    [] -> [] 
