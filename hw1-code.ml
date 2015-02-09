@@ -8,14 +8,11 @@
    Email: sophia.seitz@students.olin.edu
 
    Comments: For this homework, I used this stack overflow link to learn
-   a little more about matchin in ocaml 
+   a little more about matching in ocaml 
    http://stackoverflow.com/questions/8286001/in-ocaml-what-is-the-canonical-way-of-matching-against-multiple-arguments-of-a
 
    I also used this ocaml guide 
    http://www.csc.villanova.edu/~dmatusze/resources/ocaml/ocaml.html
-
-   I also discussed this homework assignment with Anne Wilkinson
-
  *)
 
 
