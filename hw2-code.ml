@@ -251,21 +251,74 @@ let accept (dfa, input) = isFinal(dfa,
  *)
 
 let dfaQuestion1a () = 
-  failwith "dfaQuestion1a not implemented"
+  {alphabet= ['a'; 'b'];
+   states= ["len0"; "len1"; "len2"; "len3";"sink"];
+   start= "len0";
+   delta = [("len0", 'a', "len1");
+            ("len0", 'b', "len1");
+            ("len1", 'a', "len2");
+            ("len1", 'b', "len2");
+            ("len2",  'a', "len3");
+            ("len2",  'b', "len3");
+            ("len3",  'a', "sink");
+            ("len3",  'b', "sink");
+            ("sink",   'a', "sink");
+            ("sink",   'b', "sink")];
+   final = ["len3"]};;
 
 let dfaQuestion1b () = 
-  failwith "dfaQuestion1b not implemented"
+  {alphabet= ['a'; 'b'];
+   states= ["mod0"; "mod1"; "mod2"];
+   start= "mod0";
+   delta = [("mod0", 'a', "mod1");
+            ("mod0", 'b', "mod1");
+            ("mod1", 'a', "mod2");
+            ("mod1", 'b', "mod2");
+            ("mod2", 'a', "mod0");
+            ("mod2", 'b', "mod0");];
+   final = ["mod0"]};;
 
 let dfaQuestion1c () = 
-  failwith "dfaQuestion1c not implemented"
+   {alphabet= ['a'; 'b'];
+   states= ["evena"; "odda"];
+   start= "mod0";
+   delta = [("evena", 'a', "odda");
+            ("evena", 'b', "evena");
+            ("odda", 'a', "evena");
+            ("odda", 'b', "odda");];
+   final = ["odda"]};;
 
 let dfaQuestion1d () = 
-  failwith "dfaQuestion1d not implemented"
+   {alphabet= ['a'; 'b'];
+   states= ["start"; "needa"; "gota"; "sink"];
+   start= "start";
+   delta = [("start", 'a', "gota");
+            ("start", 'b', "needa");
+            ("needa", 'a', "gota");
+            ("needa", 'b', "sink");
+            ("gota", 'a', "gota");
+            ("gota", 'b', "needa");
+            ("sink", 'a', "sink");
+            ("sink", 'b', "sink");];
+   final = ["gota"]};;
 
 let dfaQuestion1e () = 
-  failwith "dfaQuestion1e not implemented"
-
-
+   {alphabet= ['a'; 'b'];
+   states= ["mod0"; "mod1"; "mod2"; "mod3"; "mod4"; "mod5"];
+   start= "mod0";
+   delta = [("mod0", 'a', "mod1");
+            ("mod0", 'b', "mod1");
+            ("mod1", 'a', "mod2");
+            ("mod1", 'b', "mod2");
+            ("mod2", 'a', "mod3");
+            ("mod2", 'b', "mod3");
+            ("mod3", 'a', "mod4");
+            ("mod3", 'b', "mod4");
+            ("mod4", 'a', "mod5");
+            ("mod4", 'b', "mod6");
+            ("mod5", 'a', "mod0");
+            ("mod5", 'b', "mod0");];
+   final = ["mod0";"mod2";"mod3";"mod4"]};;
 
 
 (* 
