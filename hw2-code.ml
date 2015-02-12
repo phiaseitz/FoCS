@@ -197,10 +197,10 @@ let isFinal (dfa,state) = if isElement(state,dfa.final) then true else false;;
  *)
 
 let rec getTransFromDeltas (state,input,deltaList) = match deltaList with
-  [] -> "none"
+  [] -> ""
   | h::t -> match h with 
     (possState, possInput, possNewState) ->  
-      if (state = possState) && (input = possInput) then possNewState 
+      if (state = possState) && (input = possInput) then possNewState
       else getTransFromDeltas(state,input,t);;
 
 let transition (dfa,state,input) = getTransFromDeltas(state,input,dfa.delta);;
@@ -232,12 +232,12 @@ let rec extendedTransition (dfa, state, cs) = match cs with
  *
  *)
 
-let rec strToCharList (str) = if ((String.length str) = 0) then [] 
+(*let rec strToCharList (str) = if ((String.length str) = 0) then [] 
   else  (String.get str 0)::strToCharList(
-    String.sub str 1 ((String.length str)-1));;
+    String.sub str 1 ((String.length str)-1));;*)
 
 let accept (dfa, input) = isFinal(dfa,
-  extendedTransition(dfa,dfa.start,strToCharList(input)));;
+  extendedTransition(dfa,dfa.start,explode(input)));;
 
 
 
@@ -281,7 +281,7 @@ let dfaQuestion1b () =
 let dfaQuestion1c () = 
    {alphabet= ['a'; 'b'];
    states= ["evena"; "odda"];
-   start= "mod0";
+   start= "evena";
    delta = [("evena", 'a', "odda");
             ("evena", 'b', "evena");
             ("odda", 'a', "evena");

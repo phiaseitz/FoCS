@@ -1,0 +1,128 @@
+#use "hw2-code.ml";;
+
+
+
+ isFinal(isolatedBs,"start");;
+- : bool = true
+isFinal(isolatedBs,"readb");;
+- : bool = true
+isFinal(isolatedBs,"sink");;
+- : bool = false
+
+transition(isolatedBs,"start",'a');;
+- : string = "start"
+transition(isolatedBs,"start",'b');;
+- : string = "readb"
+transition(isolatedBs,"readb",'a');;
+- : string = "start"
+transition(isolatedBs,"readb",'b');;
+- : string = "sink"
+
+
+extendedTransition(isolatedBs,"start",[]);;
+- : string = "start"
+extendedTransition(isolatedBs,"start",['b']);;
+- : string = "readb"
+extendedTransition(isolatedBs,"start",['a';'a';'b';'a']);;
+- : string = "start"
+extendedTransition(isolatedBs,"start",['a';'a';'b';'b';'a']);;
+- : string = "sink"
+
+accept(isolatedBs,"aaaaaa");;
+- : bool = true
+accept(isolatedBs,"aaaaab");;
+- : bool = true
+accept(isolatedBs,"aaabab");;
+- : bool = true
+accept(isolatedBs,"aaabbb");;
+- : bool = false
+
+printLanguage(isolatedBs,6);;
+<empty>
+a
+aa
+aaa
+aaaa
+aaaaa
+aaaaaa
+aaaaab
+aaaab
+aaaaba
+aaab
+aaaba
+aaabaa
+5aaabab
+aab
+aaba
+aabaa
+aabaaa
+aabaab
+aabab
+aababa
+ab
+aba
+abaa
+abaaa
+abaaaa
+abaaab
+abaab
+abaaba
+abab
+ababa
+ababaa
+ababab
+b
+ba
+baa
+baaa
+baaaa
+baaaaa
+baaaab
+baaab
+baaaba
+baab
+baaba
+baabaa
+baabab
+bab
+baba
+babaa
+babaaa
+babaab
+babab
+bababa
+- : unit = ()
+printLanguage(ambn,6);;
+6<empty> a
+aa
+aaa
+aaaa
+aaaaa
+aaaaaa
+aaaaab
+aaaab
+aaaabb
+aaab
+aaabb
+aaabbb
+aab
+aabb
+aabbb
+aabbbb
+ab
+abb
+abbb
+abbbb
+abbbbb b
+bb
+bbb
+bbbb
+bbbbb
+bbbbbb
+- : unit = ()
+
+printLanguage(dfaQuestion1a(),6);;
+printLanguage(dfaQuestion1b(),6);;
+printLanguage(dfaQuestion1c(),6);;
+printLanguage(dfaQuestion1d(),6);;
+printLanguage(dfaQuestion1e(),6);;
