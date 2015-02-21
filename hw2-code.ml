@@ -7,7 +7,7 @@
 
    Email: Sophia.Seitz@students.olin.edu
 
-   Comments: #use "hw2-code.ml";;
+   Comments: 
    For help with extracting values from tuples
    http://cseweb.ucsd.edu/classes/wi11/cse130/discussion/ocaml-intro2.pdf
 
@@ -300,7 +300,7 @@ let dfaQuestion1d () =
             ("gota", 'b', "needa");
             ("sink", 'a', "sink");
             ("sink", 'b', "sink");];
-   final = ["gota"]};;
+   final = ["start";"gota"]};;
 
 let dfaQuestion1e () = 
    {alphabet= ['a'; 'b'];
