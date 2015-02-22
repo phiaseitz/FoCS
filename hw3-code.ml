@@ -20,10 +20,10 @@
  *)
 
 type 'a dfa = {states :   'a list;
-    	       alphabet : char list;
-	       start :    'a;
-   	       delta :    ('a * char * 'a) list;
-	       final :    'a list}
+    	         alphabet : char list;
+	             start :    'a;
+   	            delta :    ('a * char * 'a) list;
+	             final :    'a list}
 
 
 (* 
@@ -200,7 +200,7 @@ let union (dfa1, dfa2) =
       ((s1,s2),inp) ->
     ((s1,s2),inp,(transition(dfa1,s1,inp),transition(dfa2,s2,inp)))
       ::getDelta(t, dfa1,dfa2) in
-  {alphabet= ['a'; 'b'];
+  {alphabet= if dfa1.alphabet = dfa2.alphabet then dfa1.alphabet else failwith "Alphabets do not match";
   states= cross(dfa1.states, dfa2.states);
   start = (dfa1.start, dfa2.start);
   delta = 
@@ -331,7 +331,7 @@ let rec nfa_extendedTransition (nfa, states, cs) = match cs with
 
 
 let nfa_accept (nfa, input) = 
-  nfa_hasFinal(nfa,nfa_extendedTransition(nfa,[nfa.nfa_start],explode(input)))
+  nfa_hasFinal(nfa, nfa_extendedTransition(nfa,[nfa.nfa_start],explode(input)))
 
 
 
