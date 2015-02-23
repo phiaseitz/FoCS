@@ -1,2 +1,294 @@
 #use "hw3-code.ml";;
 
+bPlus;;
+
+- : string dfa =
+{states = ["start"; "ok"; "sink"]; alphabet = ['a'; 'b']; start = "
+start";
+delta =
+[("start", 'b', "ok"); ("start", 'a', "sink"); ("ok", 'b', "ok");
+("ok", 'a', "sink"); ("sink", 'b', "sink"); ("sink", 'a', "sink")
+];
+final = ["ok"]}
+
+printLanguage (bPlus,4);;
+
+b
+bb
+bbb
+bbbb
+- : unit = ()
+
+let c = complement (bPlus);;
+
+val c : string dfa =
+{states = ["start"; "ok"; "sink"]; alphabet = ['a'; 'b']; start = "
+start";
+delta =
+[("start", 'b', "ok"); ("start", 'a', "sink"); ("ok", 'b', "ok");
+("ok", 'a', "sink"); ("sink", 'b', "sink"); ("sink", 'a', "sink
+")];
+final = ["start"; "sink"]}
+
+printLanguage (c,4);;
+
+<empty>
+a
+aa
+aaa
+aaaa
+aaab
+aab
+aaba
+aabb
+ab
+aba
+abaa
+abab
+abb
+abba
+abbb
+ba
+baa
+baaa
+baab
+bab
+baba
+babb
+bba
+bbaa
+bbab
+bbba
+- : unit = ()
+
+cross([],[]);;
+
+- : ('a * 'b) list = []
+
+cross([],[10;20]);;
+
+- : ('a * int) list = []
+
+cross([1;2;3],[10;20]);;
+
+- : (int * int) list = [(1, 10); (1, 20); (2, 10); (2, 20); (3, 10);
+(3, 20)]
+
+cross(["hello"],[10;20]);;
+
+- : (string * int) list = [("hello", 10); ("hello", 20)]
+
+cross(["hello";"world"],[10;20;30]);;
+
+- : (string * int) list =
+[("hello", 10); ("hello", 20); ("hello", 30); ("world", 10); ("world
+", 20);
+("world", 30)]
+
+cross([1;2;3;4;5],['a';'b';'c';'d';'e']);;
+
+4- : (int * char) list =
+[(1, 'a'); (1, 'b'); (1, 'c'); (1, 'd'); (1, 'e'); (2, 'a'); (2, 'b')
+;
+(2, 'c'); (2, 'd'); (2, 'e'); (3, 'a'); (3, 'b'); (3, 'c'); (3, 'd')
+;
+(3, 'e'); (4, 'a'); (4, 'b'); (4, 'c'); (4, 'd'); (4, 'e'); (5, 'a')
+;
+(5, 'b'); (5, 'c'); (5, 'd'); (5, 'e')]
+
+
+aStar;; (* DFA accepting all strings of a's (possibly empty) *)
+- : string dfa =
+{states = ["ok"; "sink"]; alphabet = ['a'; 'b']; start = "ok";
+delta =
+[("ok", 'a', "ok"); ("ok", 'b', "sink"); ("sink", 'a', "sink");
+("sink", 'b', "sink")];
+final = ["ok"]}
+
+
+printLanguage (aStar,4);;
+<empty>
+a
+aa
+aaa
+aaaa
+- : unit = ()
+
+
+bPlus;; (* DFA accepting all non-empty strings of b's *)
+- : string dfa =
+{states = ["start"; "ok"; "sink"]; alphabet = ['a'; 'b']; start = "
+start";
+delta =
+[("start", 'b', "ok"); ("start", 'a', "sink"); ("ok", 'b', "ok");
+("ok", 'a', "sink"); ("sink", 'b', "sink"); ("sink", 'a', "sink")
+];
+final = ["ok"]}
+
+
+printLanguage (bPlus,4);;
+b
+5bb
+bbb
+bbbb
+- : unit = ()
+
+
+let u = union (aStar,bPlus);;
+val u : (string * string) dfa =
+{states =
+[("ok", "start"); ("ok", "ok"); ("ok", "sink"); ("sink", "start")
+;
+("sink", "ok"); ("sink", "sink")];
+alphabet = ['a'; 'b']; start = ("ok", "start");
+delta =
+[(("ok", "start"), 'a', ("ok", "sink"));
+(("ok", "start"), 'b', ("sink", "ok"));
+(("ok", "ok"), 'a', ("ok", "sink"));
+(("ok", "ok"), 'b', ("sink", "ok"));
+(("ok", "sink"), 'a', ("ok", "sink"));
+(("ok", "sink"), 'b', ("sink", "sink"));
+(("sink", "start"), 'a', ("sink", "sink"));
+(("sink", "start"), 'b', ("sink", "ok"));
+(("sink", "ok"), 'a', ("sink", "sink"));
+(("sink", "ok"), 'b', ("sink", "ok"));
+(("sink", "sink"), 'a', ("sink", "sink"));
+(("sink", "sink"), 'b', ("sink", "sink"))];
+final =
+[("ok", "start"); ("ok", "ok"); ("ok", "sink"); ("ok", "ok");
+("sink", "ok")]}
+
+
+printLanguage (u,4);;
+<empty>
+a
+aa
+aaa
+aaaa
+b
+bb
+bbb
+bbbb
+- : unit = ()
+
+nfa_hasFinal (abaabStar,[]);;
+- : bool = false
+
+
+nfa_hasFinal (abaabStar,["s"]);;
+- : bool = true
+
+
+nfa_hasFinal (abaabStar,["s";"a11"]);;
+- : bool = true
+
+
+nfa_hasFinal (abaabStar,["a11";"a21"]);;
+- : bool = false
+
+
+nfa_hasFinal (abaabStar,["a11";"a21";"s"]);;
+- : bool = true
+
+nfa_transition (abaabStar,[],'a');;
+- : string list = []
+
+
+nfa_transition (abaabStar,["s"],'a');;
+- : string list = ["a11"; "a21"]
+
+
+nfa_transition (abaabStar,["s";"a11"],'a');;
+- : string list = ["a11"; "a21"]
+
+
+nfa_transition (abaabStar,["s";"a11";"a21"],'a');;
+- : string list = ["a11"; "a21"; "a22"]
+
+
+nfa_transition (abaabStar,["s";"a11";"a21"],'b');;
+- : string list = ["s"]
+
+
+nfa_transition (abaabStar,["s"],'b');;
+- : string list = []
+
+
+
+nfa_extendedTransition (abaabStar,[],['a';'b';'a']);;
+- : string list = []
+
+
+nfa_extendedTransition (abaabStar,["s"],['a';'b';'a']);;
+- : string list = ["a11"; "a21"]
+
+
+nfa_extendedTransition (abaabStar,["s";"a11"],['a';'b';'a']);;
+- : string list = ["a11"; "a21"]
+
+
+nfa_extendedTransition (abaabStar,["s";"a11";"a21"],['a';'b';'a'])
+;;
+- : string list = ["a11"; "a21"; "a11"; "a21"]
+
+
+nfa_extendedTransition (abaabStar,["s"],['b';'a']);;
+- : string list = []
+
+nfa_accept (abaabStar,"");;
+- : bool = true
+
+
+nfa_accept (abaabStar,"a");;
+- : bool = false
+
+
+nfa_accept (abaabStar,"ab");;
+- : bool = true
+
+
+nfa_accept (abaabStar,"aba");;
+- : bool = false
+
+
+nfa_accept (abaabStar,"abab");;
+- : bool = true
+
+
+nfa_accept (abaabStar,"abaab");;
+- : bool = true
+
+
+nfa_accept (abaabStar,"babaab");;
+- : bool = false
+
+nfa_printLanguage(abaabStar,10);;
+<empty>
+aab
+aabaab
+aabaabaab
+aabaabab
+aabaababab
+aabab
+aababaab
+aababaabab
+aababab
+aabababaab
+aabababab
+ab
+abaab
+abaabaab
+abaabaabab
+abaabab
+abaababaab
+abaababab
+abab
+ababaab
+ababaabaab
+ababaabab
+ababab
+abababaab
+abababab
+ababababab
+- : unit = ()
+

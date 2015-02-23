@@ -314,8 +314,8 @@ let rec nfa_transition (nfa,states,input) =
         else singleStateTrans(dd,state,input) in
   match states with 
   [] -> []
-  | h::t -> singleStateTrans(nfa.nfa_delta,h,input) 
-    @ nfa_transition(nfa,t,input);;
+  | h::t -> singleStateTrans(nfa.nfa_delta,h,input)@
+    nfa_transition(nfa,t,input);;
 
 
 (*
