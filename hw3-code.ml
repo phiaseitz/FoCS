@@ -7,7 +7,9 @@
 
    Email: Sophia.Seitz@students.olin.edu
 
-   Comments:
+   Comments: I used the implementation of the accept function that Riccardo 
+   provided. I also discussed problem 1 of this homework assignment with Anne 
+   Wilkinson on problem 1
 
  *)
 

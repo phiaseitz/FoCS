@@ -1,0 +1,113 @@
+#use "hw4-code.ml";;
+
+Question 1a
+	let positive = predicate_opt (fun x -> x >= 0);;
+	val positive : int -> int option = <fun>
+
+	positive 0;;
+	- : int option = Some 0
+
+	positive 10;;
+	- : int option = Some 10
+
+	positive (-1);;
+	- : int option = None
+
+	positive (-10);;
+	- : int option = None
+
+	let nonempty = predicate_opt (fun x -> match x with [] -> false | _
+	-> true);;
+	val nonempty : ’_a list -> ’_a list option = <fun>
+
+	nonempty [1;2;3;4];;
+	- : int list option = Some [1; 2; 3; 4]
+
+	nonempty [];;
+	- : int list option = None
+
+	nonempty [3];;
+	- : int list option = Some [3]
+
+	nonempty [3;4];;
+	- : int list option = Some [3; 4]
+
+Question 1b
+	let square = map_opt (fun x -> x * x);;
+	val square : int option -> int option = <fun>
+
+	square None;;
+	- : int option = None
+	
+	square (Some 10);;
+	- : int option = Some 100
+	
+	square (Some 5);;
+	- : int option = Some 25
+	
+	let add_copy = map_opt (fun x -> x ^ " (copy)");;
+	val add_copy : string option -> string option = <fun>
+	
+	add_copy None;;
+	- : string option = None
+
+	add_copy (Some "hello");;
+	- : string option = Some "hello (copy)"
+		
+	add_copy (Some "test");;
+	- : string option = Some "test (copy)"
+
+Question 1c
+	let add = comb_opt (fun x y -> x + y);;
+	val add : int option -> int option -> int option = <fun>
+	
+	add None None;;
+	- : int option = None
+	
+	add None (Some 10);;
+	- : int option = None
+	
+	add (Some 10) (Some 20);;
+	- : int option = Some 30
+	
+	add (Some 99) (Some 1);;
+	- : int option = Some 100
+	
+	let conc = comb_opt (fun x y -> x^" - "^y);;
+	val conc : string option -> string option -> string option = <fun>
+	
+	conc None None;;
+	- : string option = None
+	
+	conc None (Some "world");;
+	- : string option = None
+	
+	conc (Some "hello") (Some "world");;
+	- : string option = Some "hello - world
+
+Question 1d
+	default 0 None;;
+	- : int = 0
+	
+	default 0 (Some 10);;
+	- : int = 10
+	
+	default 0 (Some (-10));;
+	- : int = -10
+	
+	default 0 (positive 100);;
+	- : int = 100
+	
+	default 0 (positive (-1));;
+	- : int = 0
+	
+	default 0 (positive (-100));;
+	- : int = 0
+	
+	default "no-string" None;;
+	- : string = "no-string"
+	
+	default "no-string" (Some "hello");;
+	- : string = "hello"
+			
+			
