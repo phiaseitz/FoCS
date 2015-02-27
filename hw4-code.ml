@@ -8,6 +8,9 @@
    Email: Sophia.Seitz@students.olin.edu
 
    Comments:
+   I found this website had a very helpful walkthough of how to use fold_left 
+   and fold_right:
+   http://www.cs.cornell.edu/courses/cs3110/2011sp/recitations/rec05.htm
 
  *)
 
@@ -60,7 +63,8 @@ let compose_opt f g = (fun x -> match f x with
  *)
 
 
-let at_least n p xs = failwith "not implemented"
+let at_least n p xs = if List.fold_right(fun c x -> 
+  if p(x) then c+1  else c) >= n then true else false;;
 
 let max_list xs = failwith "not implemented"
 
