@@ -109,5 +109,63 @@ Question 1d
 	
 	default "no-string" (Some "hello");;
 	- : string = "hello"
-			
-			
+
+Question 1e
+	let rec last l =
+		match l with
+		[] -> None
+		| [x] -> Some(x)
+		| x::xs -> last(xs);;
+	val last : ’a list -> ’a option = <fun>
+	
+	let positive_last = compose_opt last positive;;
+	val positive_last : int list -> int option = <fun>
+	
+	positive_last [];;
+	- : int option = None
+	
+	positive_last [1;2;3;4];;
+	- : int option = Some 4
+	
+	positive_last [1;-2;3;-4];;
+	- : int option = None
+
+
+Question 2a
+	at_least 0 (fun x -> x) [];;
+	- : bool = true
+	
+	at_least 1 (fun x -> x) [];;
+	- : bool = false
+	
+	at_least 0 (fun x -> x) [true; true; false];;
+	- : bool = true
+	
+	at_least 1 (fun x -> x > 0) [2; 3; 0];;
+	- : bool = true
+	
+	at_least 2 (fun x -> x > 0) [2; 3; 0];;
+	- : bool = true
+	
+	at_least 3 (fun x -> x > 0) [2; 3; 0];;
+	- : bool = false
+
+Question 2b
+	max_list [];;
+	- : ’a option = None
+	
+	max_list [4];;
+	- : int option = Some 4
+	
+	max_list [4; 5];;
+	- : int option = Some 5
+	
+	max_list [5; 4];;
+	- : int option = Some 5
+	
+	max_list [6; 4];;
+	- : int option = Some 6
+	
+	max_list [4; 8; 6; 3; 8; 7; 3];;
+	- : int option = Some 8			
+					

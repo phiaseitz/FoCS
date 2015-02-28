@@ -63,8 +63,8 @@ let compose_opt f g = (fun x -> match f x with
  *)
 
 
-let at_least n p xs = if List.fold_right(fun c x -> 
-  if p(x) then c+1  else c) >= n then true else false;;
+let at_least n p xs = if (List.fold_right(fun x c -> 
+  if p x  then c+1  else c) xs 0)>= n then true else false;;
 
 let max_list xs = failwith "not implemented"
 
