@@ -66,11 +66,15 @@ let compose_opt f g = (fun x -> match f x with
 let at_least n p xs = if (List.fold_right(fun x c -> 
   if p x  then c+1  else c) xs 0)>= n then true else false;;
 
-let max_list xs = failwith "not implemented"
+let max_list xs = List.fold_right(fun x m -> match m with 
+  None -> Some x
+  | Some m' -> Some (max x m')) xs None;;
 
-let map_funs fs x = failwith "not implemented"
 
-let map_cross fs xs = failwith "not implemented"
+let map_funs fs x = List.fold_right(fun f fsx-> (f x)::fsx) fs [];;
+
+let map_cross fs xs = List.fold_right(fun x fsxs -> 
+  (map_funs fs x)@fsxs) xs [];;
 
 
 

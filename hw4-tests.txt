@@ -167,5 +167,55 @@ Question 2b
 	- : int option = Some 6
 	
 	max_list [4; 8; 6; 3; 8; 7; 3];;
-	- : int option = Some 8			
-					
+	- : int option = Some 8		
+
+Question 2c
+	let dbl x = "double of "^(string_of_int x);;
+	val dbl : int -> string = <fun>
+	
+	let neg x = "negative of "^(string_of_int x);;
+	val neg : int -> string = <fun>
+	
+	map_funs [] 3;;
+	- : ’a list = []
+	
+	map_funs [dbl] 3;;
+	- : string list = ["double of 3"]
+	
+	map_funs [dbl; neg] 3;;
+	- : string list = ["double of 3"; "negative of 3"]
+	
+	map_funs [dbl; neg; dbl] 3;;
+	- : string list = ["double of 3"; "negative of 3"; "double of 3"]	
+
+Question 2d
+	
+	let dbl x = "double of "^(string_of_int x);;
+	val dbl : int -> string = <fun>
+	
+	let neg x = "negative of "^(string_of_int x);;
+	val neg : int -> string = <fun>
+	
+	map_cross [] [];;
+	- : ’a list = []
+	
+	map_cross [] [1;2;3];;
+	- : ’a list = []
+	
+	map_cross [dbl; neg] [];;
+	- : string list = []
+	
+	map_cross [dbl] [3];;
+	6- : string list = ["double of 3"]
+	
+	map_cross [dbl] [1;2;3];;
+	- : string list = ["double of 1"; "double of 2"; "double of 3"]
+	
+	map_cross [dbl; neg] [3];;
+	- : string list = ["double of 3"; "negative of 3"]
+	
+	map_cross [dbl; neg] [1; 2; 3];;
+	- : string list =
+	["double of 1"; "negative of 1"; "double of 2"; "negative of 2";
+	"double of 3"; "negative of 3"]
+							
