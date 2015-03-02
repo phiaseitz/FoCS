@@ -95,19 +95,20 @@ let prefixes xs = List.fold_left(fun prefixlist x->  match prefixlist with
   [] -> []
   | h::t -> (h@[x])::prefixlist) [[]] xs;; 
 
-let rec insert (a,i,xs) = match xs with 
+let rec insert a i xs = match xs with 
   [] -> [a]
-  | h::t -> if i = 0 then a::xs else h::insert(a,i-1,t);;
+  | h::t -> if i = 0 then a::xs else h::(insert a (i-1) t);;
 
 let rec list0ton n = if n = 0 then [0] else list0ton(n-1)@[n];;
 
 let len xs = List.fold_right(fun x a -> a+1) xs 0;;
 
-let rec injectAtInds a xs is = match is with 
-  [] -> []
-  | h::t -> [insert(a,h,xs)]@(injectAtInds a xs t);;
+let rec injectAtInds a xs is = List.fold_right(fun i injected -> 
+  (insert a i xs)::injected) is [];;
 
-let rec inject a xs = injectAtInds a xs (list0ton(len xs));;
+  (*[insert(a,h,xs)]@(injectAtInds a xs t);;*)
+
+let inject a xs = injectAtInds a xs (list0ton(len xs));;
 
 let injectl a lxs = match lxs with 
   [] -> inject a []
