@@ -88,14 +88,33 @@ let map_cross fs xs = List.fold_right(fun x fsxs ->
 
 
 let suffixes xs = List.fold_right(fun x suffixlist->  match suffixlist with
-  h::t -> ([x]@h)::suffixlist) xs [[]];;
+  [] -> []
+  | h::t -> ([x]@h)::suffixlist) xs [[]];;
 
 let prefixes xs = List.fold_left(fun prefixlist x->  match prefixlist with
-  h::t -> (h@[x])::prefixlist) [[]] xs;; 
+  [] -> []
+  | h::t -> (h@[x])::prefixlist) [[]] xs;; 
 
-let inject a xs = 
+let rec insert (a,i,xs) = match xs with 
+  [] -> [a]
+  | h::t -> if i = 0 then a::xs else h::insert(a,i-1,t);;
 
-let perms xs = failwith "not implemented"
+let rec list0ton n = if n = 0 then [0] else list0ton(n-1)@[n];;
+
+let len xs = List.fold_right(fun x a -> a+1) xs 0;;
+
+let rec injectAtInds a xs is = match is with 
+  [] -> []
+  | h::t -> [insert(a,h,xs)]@(injectAtInds a xs t);;
+
+let rec inject a xs = injectAtInds a xs (list0ton(len xs));;
+
+let injectl a lxs = match lxs with 
+  [] -> inject a []
+  | h::t -> List.fold_right(fun xs injectedl -> 
+  (inject a xs)@injectedl) lxs [];;
+
+let perms xs = List.fold_right (fun x permsl -> injectl x permsl) xs []
 
 
 
