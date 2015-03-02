@@ -189,7 +189,6 @@ Question 2c
 	- : string list = ["double of 3"; "negative of 3"; "double of 3"]	
 
 Question 2d
-	
 	let dbl x = "double of "^(string_of_int x);;
 	val dbl : int -> string = <fun>
 	
@@ -218,4 +217,24 @@ Question 2d
 	- : string list =
 	["double of 1"; "negative of 1"; "double of 2"; "negative of 2";
 	"double of 3"; "negative of 3"]
+
+Question 3a
+	suffixes [];;
+	- : ’a list list = [[]]
+	
+	suffixes [1];;
+	- : int list list = [[1]; []]
+	
+	suffixes [1;2;3;4];;
+	- : int list list = [[1; 2; 3; 4]; [2; 3; 4]; [3; 4]; [4]; []]
+
+Question 3b
+	prefixes [];;
+	- : ’a list list = [[]]
+	
+	prefixes [1];;
+	- : int list list = [[]; [1]]
+	
+	prefixes [1;2;3;4];;
+	- : int list list = [[]; [1]; [1; 2]; [1; 2; 3]; [1; 2; 3; 4]]
 							

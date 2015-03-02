@@ -84,13 +84,16 @@ let map_cross fs xs = List.fold_right(fun x fsxs ->
  * 
  * 
  *)
+ 
 
 
-let suffixes xs = failwith "not implemented"
+let suffixes xs = List.fold_right(fun x suffixlist->  match suffixlist with
+  h::t -> ([x]@h)::suffixlist) xs [[]];;
 
-let prefixes xs = failwith "not implemented"
+let prefixes xs = List.fold_left(fun prefixlist x->  match prefixlist with
+  h::t -> (h@[x])::prefixlist) [[]] xs;; 
 
-let inject a xs = failwith "not implemented"
+let inject a xs = 
 
 let perms xs = failwith "not implemented"
 
