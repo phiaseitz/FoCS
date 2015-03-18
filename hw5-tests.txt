@@ -1,0 +1,51 @@
+#use "hw5-code.ml";;
+
+Question 3a
+	initial_config anbn "aaabb";;
+	- : string * char list * char list =
+	("q1", ['a'; 'a'; 'a'; 'b'; 'b'], ['_'])
+	
+	initial_config anbn "aaabbb";;
+	- : string * char list * char list =
+	("q1", ['a'; 'a'; 'a'; 'b'; 'b'; 'b'], ['_'])
+	
+	initial_config ambn "aaabb";;
+	- : string * char list * char list =
+	("q1", ['a'; 'a'; 'a'; 'b'; 'b'], ['X'])
+	
+	initial_config ambn "bb";;
+	- : string * char list * char list =
+	("q1", ['b'; 'b'], ['X'])
+
+Question 3b
+	accepting_config anbn ("q3", [], ['.'; '.'; '_']);;
+	- : bool = true
+	
+	accepting_config anbn ("q3", ['a'], ['.'; '.'; '_']);;
+	- : bool = false
+	
+	accepting_config anbn ("q2", [], ['.'; '.'; '_']);;
+	- : bool = false
+	
+	accepting_config ambn ("q2", [], ['.'; '_']);;
+	- : bool = true
+	
+	accepting_config ambn ("q1", [], ['.'; '_']);;
+	- : bool = false
+
+Question 3c
+	has_accepting_config anbn [];;
+	- : bool = false
+	
+	has_accepting_config anbn [("q3", [], ['.'; '.'; '_']);("q3", ['a'], ['.'; '.'; '_'])];;
+	- : bool = true
+	
+	has_accepting_config anbn [("q3", ['b'], ['.'; '.'; '_']);("q3", ['a'], ['.'; '.'; '_'])];;
+	- : bool = false
+	
+	has_accepting_config ambn [("q2", [], ['.'; '.'; '_']);("q2", ['a'], ['.'; '.'; '_'])];;
+	- : bool = true
+	
+	has_accepting_config ambn [("q2", ['b'], ['.'; '.'; '_']);("q2", ['a'], ['.'; '.'; '_'])];;
+	- : bool = false
+
