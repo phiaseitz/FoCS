@@ -49,3 +49,93 @@ Question 3c
 	has_accepting_config ambn [("q2", ['b'], ['.'; '.'; '_']);("q2", ['a'], ['.'; '.'; '_'])];;
 	- : bool = false
 
+Question 3d
+	step_config anbn ("q1", ['a'; 'b'], ['_']);;
+	- : (string * char list * char list) list =
+	[("q1", ['b'], ['.'; '_']); ("q2", ['a'; 'b'], ['_'])]
+	
+	step_config anbn ("q2", ['b'], ['.'; '_']);;
+	- : (string * char list * char list) list = [("q2", [], ['_'])]
+	
+	step_config anbn ("q2", ['b'], ['_']);;
+	- : (string * char list * char list) list = [("q3", ['b'], ['_'])]
+	
+	step_config anbn ("q3", ['a'], ['_']);;
+	- : (string * char list * char list) list = []
+	
+	step_config ambn ("q1",['a';'a';'b'],['.';'_']);;
+	- : (string * char list * char list) list =
+	[("q1", ['a'; 'b'], ['.'; '.'; '_']); ("q2", ['a'; 'a'; 'b'], ['.'; '
+	_'])]
+	
+	step_config ambn ("q1",['b'],['.';'_']);;
+	- : (string * char list * char list) list = [("q2", ['b'], ['.'; '_
+	'])]
+	
+	step_config ambn ("q2",['b'],['.';'_']);;
+	- : (string * char list * char list) list = [("q2", [], ['_'])]
+
+Question 3e
+	 step_configs anbn [];;
+	- : (string * char list * char list) list = []
+	
+	step_configs anbn [("q1", ['a'; 'b'], ['_']);
+	("q2", ['b'], ['.'; '_'])];;
+	- : (string * char list * char list) list =
+	[("q1", ['b'], ['.'; '_']);
+	("q2", ['a'; 'b'], ['_']);
+	("q2", [], ['_'])]
+	
+	step_configs anbn [("q1", ['a'; 'b'], ['_']);
+	("q2", ['b'], ['.'; '_']);
+	("q2", ['b'], ['_'])];;
+	- : (string * char list * char list) list =
+	[("q1", ['b'], ['.'; '_']);
+	("q2", ['a'; 'b'], ['_']);
+	("q2", [], ['_']);
+	("q3", ['b'], ['_'])]
+	
+	step_configs ambn [("q1",['a';'a';'b'],['.';'_']);
+	("q1",['b'],['.';'_'])];;
+	- : (string * char list * char list) list =
+	[("q1", ['a'; 'b'], ['.'; '.'; '_']);
+	("q2", ['a'; 'a'; 'b'], ['.'; '_']);
+	("q2", ['b'], ['.'; '_'])]
+
+Question 3f
+	accept anbn "abbbab";;
+	- : bool = false
+	
+	accept anbn "abb";;
+	- : bool = false
+
+	accept anbn "aabb";;
+	- : bool = true
+
+	accept anbn "aabbb";;
+	- : bool = false
+	
+	accept anbn "aab";;
+	- : bool = false
+	
+	accept anbn "aaaabbbb";;
+	- : bool = true
+	
+	accept ambn "";;
+	- : bool = true
+	
+	accept ambn "aa";;
+	- : bool = true
+	
+	accept ambn "bb";;
+	- : bool = false
+	
+	accept ambn "aabb";;
+	- : bool = true
+	
+	accept ambn "aaaabb";;
+	- : bool = true
+	
+	accept ambn "aaaabba";;
+	- : bool = false
+

@@ -97,6 +97,7 @@ let initial_config p w = (p.pda_start, explode (w), [p.pda_bottom]);;
 let is_accepting_state p s = 
   List.fold_right(fun state accept -> state = s || accept) p.pda_final false;;
 
+(*If I want this to be less general, I should fold right of some dfa stuff*)
 let accepting_config pda cfg = match cfg with (state,remaining,stack) ->
   match remaining with 
   [] -> is_accepting_state pda state
@@ -106,11 +107,39 @@ let accepting_config pda cfg = match cfg with (state,remaining,stack) ->
 let has_accepting_config pda cfgs = List.fold_right
   (fun cfg accepting -> (accepting_config pda cfg)||accepting) cfgs false;;
 
-let step_config pda cfg = failwith "not implemented"
+let get_deltas deltas state input top = match input with 
+  None -> List.filter (fun delta -> match delta with
+  (dstate,dinput,dtop,_,_) -> if dstate = state then match dinput with
+    None -> if top = dtop then true else false
+    | Some dinput' -> false else false) deltas
+  | Some input' -> List.filter (fun delta -> match delta with
+  (dstate,dinput,dtop,_,_) -> if dstate = state then match dinput with
+    None -> if top = dtop then true else false
+    | Some dinput' -> if input' = dinput' then 
+      if top = dtop then true else false
+    else false 
+  else false)  deltas;;
 
-let step_configs pda cfgs = failwith "not implemented"
+let step_config pda cfg = match cfg with 
+  (state, remaining, stack) -> match stack with
+    top::bottom -> match remaining with
+      [] -> List.map(fun delta -> match delta with 
+        (dstate,dinput,dtop,dnext,dpush) -> (dnext,remaining,dpush@bottom)) 
+        (get_deltas pda.pda_delta state None top)
+      | next::rest -> List.map(fun delta -> match delta with 
+      (dstate,dinput,dtop,dnext,dpush) -> match dinput with
+        None -> (dnext,remaining,dpush@bottom)
+        | Some i -> (dnext, rest, dpush@bottom)) (get_deltas pda.pda_delta state 
+          (Some next) top);;
 
-let accept pda w = failwith "not implemented"
+let step_configs pda cfgs = List.fold_right(fun cfg newcfgs -> 
+  (step_config pda cfg)@newcfgs) cfgs [];;
+
+let rec step_limit pda cfgs timesleft = if timesleft <= 0 then false
+  else if (has_accepting_config pda cfgs) then true 
+    else (step_limit pda (step_configs pda cfgs) (timesleft-1));;
+
+let accept pda w = step_limit pda [(initial_config pda w)] 100;;
 
 
 
