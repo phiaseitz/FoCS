@@ -58,9 +58,9 @@ Question 2a
 	
 	applyRule ("A",[N "X"; N "Y"; N "Z"]) [N "A"; T 'b'; N "A"; N "A"];;
 	- : termOrNonTerm list list =
-	[[N "X"; N "Y"; N "Z"; T ’b’; N "A"; N "A"];
-	[N "A"; T ’b’; N "X"; N "Y"; N "Z"; N "A"];
-	[N "A"; T ’b’; N "A"; N "X"; N "Y"; N "Z"]]
+	[[N "X"; N "Y"; N "Z"; T 'b'; N "A"; N "A"];
+	[N "A"; T 'b'; N "X"; N "Y"; N "Z"; N "A"];
+	[N "A"; T 'b'; N "A"; N "X"; N "Y"; N "Z"]]
 	
 	applyRule ("A",[N "X"; N "Y"; N "A"]) [N "A"; N "B"; N "A"];;
 	- : termOrNonTerm list list =
@@ -88,12 +88,12 @@ Question 2a
 	[N "A"; N "A"; N "X"; N "B"; N "S"]; [N "S"; N "A"; N "A"; N "X"; N
 	"B"]]
 	
-	applyAllRules cgrammar_aab.ccfg_rules [N "S"; T ’a’; N "S"];;
+	applyAllRules cgrammar_aab.ccfg_rules [N "S"; T 'a'; N "S"];;
 	- : termOrNonTerm list list =
-	[[N "A"; N "A"; N "B"; T ’a’; N "S"]; [N "S"; T ’a’; N "A"; N "A"; N
+	[[N "A"; N "A"; N "B"; T 'a'; N "S"]; [N "S"; T 'a'; N "A"; N "A"; N
 	"B"];
-	[N "A"; N "A"; N "X"; N "B"; T ’a’; N "S"];
-	[N "S"; T ’a’; N "A"; N "A"; N "X"; N "B"]]
+	[N "A"; N "A"; N "X"; N "B"; T 'a'; N "S"];
+	[N "S"; T 'a'; N "A"; N "A"; N "X"; N "B"]]
 
 
 

@@ -139,18 +139,8 @@ let rec found cl tntl = match cl, tntl with
   | [],tnt::tntl' -> false
   | c::cl', [] -> false
   | c::cl', tnt::tntl' -> match tnt with
-    T t -> if t = c then (found cl tntl')||(found cl' tntl') else (found cl' tntl)
+    T t -> if t = c then (found cl' tntl') else false
     | N n -> false;;
-
-(* This is an implementation of found that does not care about the order of cl.
-
-let found cl tntl = List.fold_right(fun tnt is_a_term -> match tnt with
-  T t -> if (List.fold_right(fun c is_term -> if t = c then true else is_term) 
-  cl false) then is_a_term else false
-  | N n -> false) tntl true;; *)
-  
-
-  (* Find all occurences of a place where a rule could be applied? and apply it  *)
 
 let insertAllLists ins listOfLists = List.map(fun l -> ins::l) listOfLists;;
 
