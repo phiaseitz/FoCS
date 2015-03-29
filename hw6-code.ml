@@ -81,7 +81,7 @@ let strings (alphabet, n) =
 
 
 
-type termOrNonTerm =
+type termOrNonTerm = 
     T of char
   | N of string
 
@@ -134,14 +134,46 @@ let cgrammar_bad = { ccfg_nonterminals = ["S"];
 
 (* Question 2 *)
 
-let found string gen = 
-  failwith "found not implemented"
+let rec found cl tntl = match cl, tntl with 
+  [],[] -> true
+  | [],tnt::tntl' -> false
+  | c::cl', [] -> false
+  | c::cl', tnt::tntl' -> match tnt with
+    T t -> if t = c then (found cl tntl')||(found cl' tntl') else (found cl' tntl)
+    | N n -> false;;
 
-let applyRule r string = 
-  failwith "applyRule not implemented"
+(* This is an implementation of found that does not care about the order of cl.
 
-let applyAllRules rules string = 
-  failwith "applyAllRules not implemented"
+let found cl tntl = List.fold_right(fun tnt is_a_term -> match tnt with
+  T t -> if (List.fold_right(fun c is_term -> if t = c then true else is_term) 
+  cl false) then is_a_term else false
+  | N n -> false) tntl true;; *)
+  
+
+  (* Find all occurences of a place where a rule could be applied? and apply it  *)
+
+let insertAllLists ins listOfLists = List.map(fun l -> ins::l) listOfLists;;
+
+let applyRule r str = match r with 
+  (head,body) ->  match (List.fold_right(fun tnt applied -> match tnt with
+    T t -> 
+      (match applied with 
+        [] -> [[tnt]]
+        | app1::appr -> insertAllLists tnt applied)
+    | N nt -> 
+      if nt = head then 
+        match applied with 
+          [] -> [[tnt];body]
+          | app1::appr -> (tnt::app1)::((body@app1)::(insertAllLists tnt appr))
+      else  match applied with
+        [] -> [[tnt]]
+        | app1::appr -> (insertAllLists tnt applied)) str []) with
+      [] -> []
+      | nonApplied::appliedL -> appliedL;;
+
+
+let applyAllRules rules str = List.fold_right (fun rule applied -> 
+  (applyRule rule str)@applied) rules [];;
 
 
 (* helper function to check if a grammar is Chomsky *)

@@ -1,0 +1,100 @@
+#use "hw6-code.ml";;
+
+Question 2a
+	found [] [];;
+	- : bool = true
+	
+	found ['a'] [T 'a'];;
+	- : bool = true
+	
+	found ['a'] [N "a"];;
+	- : bool = false
+	
+	found ['a'] [N "a"];;
+	- : bool = false
+	
+	found ['a'] [T 'a'; T 'a'];;
+	- : bool = false
+	
+	found ['a'] [T 'a'; T 'b'];;
+	- : bool = false
+	
+	found ['a'] [T 'b'; T 'a'];;
+	- : bool = false
+	
+	found ['b'; 'a'] [T 'b'; T 'a'];;
+	- : bool = true
+	
+	found ['a'; 'b'] [T 'b'; T 'a'];;
+	- : bool = false
+	
+	found ['a';'b';'c'] [T 'a'; T 'b'; T 'c'];;
+	- : bool = true
+
+2b
+	applyRule ("A",[N "X"; N "Y"; N "Z"]) [];;
+	- : termOrNonTerm list list = []
+	
+	applyRule ("A",[N "X"; N "Y"; N "Z"]) [N "B"];;
+	- : termOrNonTerm list list = []
+	
+	applyRule ("A",[N "X"; N "Y"; N "Z"]) [N "A"];;
+	- : termOrNonTerm list list = [[N "X"; N "Y"; N "Z"]]
+
+	applyRule ("A",[N "X"; N "Y"; N "Z"]) [N "A"; N "B"];;
+	- : termOrNonTerm list list = [[N "X"; N "Y"; N "Z"; N "B"]]
+	
+	applyRule ("A",[N "X"; N "Y"; N "Z"]) [N "A"; N "B"; N "A"];;
+	- : termOrNonTerm list list =
+	[[N "X"; N "Y"; N "Z"; N "B"; N "A"]; [N "A"; N "B"; N "X"; N "Y"; N
+	"Z"]]
+	
+	applyRule ("A",[N "X"; N "Y"; N "Z"]) [N "A"; N "B"; N "A"; N "A
+	"];;
+	- : termOrNonTerm list list =
+	[[N "X"; N "Y"; N "Z"; N "B"; N "A"; N "A"];
+	[N "A"; N "B"; N "X"; N "Y"; N "Z"; N "A"];
+	[N "A"; N "B"; N "A"; N "X"; N "Y"; N "Z"]]
+	
+	applyRule ("A",[N "X"; N "Y"; N "Z"]) [N "A"; T 'b'; N "A"; N "A"];;
+	- : termOrNonTerm list list =
+	[[N "X"; N "Y"; N "Z"; T ’b’; N "A"; N "A"];
+	[N "A"; T ’b’; N "X"; N "Y"; N "Z"; N "A"];
+	[N "A"; T ’b’; N "A"; N "X"; N "Y"; N "Z"]]
+	
+	applyRule ("A",[N "X"; N "Y"; N "A"]) [N "A"; N "B"; N "A"];;
+	- : termOrNonTerm list list =
+	[[N "X"; N "Y"; N "A"; N "B"; N "A"]; [N "A"; N "B"; N "X"; N "Y"; N
+	"A"]]
+
+2c
+	applyAllRules cgrammar_aab.ccfg_rules [];;
+	- : termOrNonTerm list list = []
+	
+	applyAllRules cgrammar_aab.ccfg_rules [N "Y"];;
+	- : termOrNonTerm list list = []
+	
+	applyAllRules cgrammar_aab.ccfg_rules [N "S"];;
+	- : termOrNonTerm list list =
+	[[N "A"; N "A"; N "B"]; [N "A"; N "A"; N "X"; N "B"]]
+	
+	applyAllRules cgrammar_aab.ccfg_rules [N "X"];;
+	- : termOrNonTerm list list =
+	[[N "A"; N "A"; N "B"]; [N "A"; N "A"; N "X"; N "B"]]
+	
+	applyAllRules cgrammar_aab.ccfg_rules [N "S"; N "S"];;
+	- : termOrNonTerm list list =
+	[[N "A"; N "A"; N "B"; N "S"]; [N "S"; N "A"; N "A"; N "B"];
+	[N "A"; N "A"; N "X"; N "B"; N "S"]; [N "S"; N "A"; N "A"; N "X"; N
+	"B"]]
+	
+	applyAllRules cgrammar_aab.ccfg_rules [N "S"; T ’a’; N "S"];;
+	- : termOrNonTerm list list =
+	[[N "A"; N "A"; N "B"; T ’a’; N "S"]; [N "S"; T ’a’; N "A"; N "A"; N
+	"B"];
+	[N "A"; N "A"; N "X"; N "B"; T ’a’; N "S"];
+	[N "S"; T ’a’; N "A"; N "A"; N "X"; N "B"]]
+
+
+
+	
