@@ -3,9 +3,9 @@
    Homework 6 code
 
 
-   Name:
+   Name: Sophia
 
-   Email:
+   Email: Sophia.seitz@students.olin.edu  
 
    Comments:
 

@@ -10,9 +10,6 @@ Question 2a
 	found ['a'] [N "a"];;
 	- : bool = false
 	
-	found ['a'] [N "a"];;
-	- : bool = false
-	
 	found ['a'] [T 'a'; T 'a'];;
 	- : bool = false
 	
@@ -97,4 +94,3 @@ Question 2a
 
 
 
-	
