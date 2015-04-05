@@ -1,0 +1,85 @@
+#use "hw7-code.ml";;
+
+1a
+	starting_config asbs "";;
+	- : ’a list * string * string list = ([], "start", [">"])
+
+	starting_config asbs "ab";;
+	- : ’a list * string * string list = ([], "start", [">"; "a"; "b"])
+	
+	starting_config asbs "aaaabbbaa";;
+	- : ’a list * string * string list =
+	([], "start", [">"; "a"; "a"; "a"; "a"; "b"; "b"; "b"; "a"; "a"])
+	
+	starting_config anbn "";;
+	- : ’a list * string * string list = ([], "start", [">"])
+	
+	starting_config anbn "aabb";;
+	- : ’a list * string * string list =
+	([], "start", [">"; "a"; "a"; "b"; "b"])
+	
+	starting_config anbn "aabbaa";;
+	- : ’a list * string * string list =
+	([], "start", [">"; "a"; "a"; "b"; "b"; "a"; "a"])
+
+1b
+	accepting_config asbs ([], "start", ["_"]);;
+- : bool = false
+	
+	accepting_config asbs ([], "q1", [">"; "a"; "_"]);;
+	- : bool = false
+	
+	accepting_config asbs (["b"], "acc", [">"; "a"; "_"]);;
+	- : bool = true
+	
+	accepting_config asbs (["b"], "rej", [">"; "a"; "_"]);;
+	- : bool = false
+	
+	rejecting_config asbs ([], "start", ["_"]);;
+	- : bool = false
+	
+	rejecting_config asbs ([], "q1", [">"; "a"; "_"]);;
+	- : bool = false
+	
+	rejecting_config asbs (["b"], "acc", [">"; "a"; "_"]);;
+	- : bool = false
+	
+	rejecting_config asbs (["b"], "rej", [">"; "a"; "_"]);;
+	- : bool = true
+	
+	halting_config asbs ([], "start", ["_"]);;
+	- : bool = false
+	
+	halting_config asbs ([], "q1", [">"; "a"; "_"]);;
+	- : bool = false
+	
+	halting_config asbs (["b"], "acc", [">"; "a"; "_"]);;
+	- : bool = true
+	
+	halting_config asbs (["b"], "rej", [">"; "a"; "_"]);;
+	- : bool = true
+
+1c
+	step_config asbs ([], "start", ["_"]);;
+	- : char list * string * char list = (["_"], "acc", [])
+	
+	step_config asbs ([">"; "a"], "start", ["b"; "b"]);;
+	- : char list * string * char list = ([">"; "a"; "b"], "q1", ["b"])
+	
+	step_config asbs ([">"; "a"], "q1", ["a"; "b"]);;
+	- : char list * string * char list = ([">"; "a"; "a"], "rej", ["b"])
+	
+	step_config asbs ([">"; "a"], "q1", ["b"; "b"]);;
+	- : char list * string * char list = ([">"; "a"; "b"], "q1", ["b"])
+	
+	step_config anbn ([">"; "a"; "b"], "q1", ["_"]);;
+	- : char list * string * char list = ([">"; "a"; "b"; "_"], "q2", [])
+	
+	step_config anbn ([">"; "a"; "b"], "q2", ["_"]);;
+	- : char list * string * char list = ([">"; "a"], "q2", ["b"; "_"])
+	
+	step_config anbn ([">"], "q3", ["a";"b"]);;
+	- : char list * string * char list = ([">"; "X"], "q4", ["b"])
+	
+	step_config anbn ([">";"X"], "q4", ["b"]);;
+	- : char list * string * char list = ([">"; "X"; "X"], "q2", [])
