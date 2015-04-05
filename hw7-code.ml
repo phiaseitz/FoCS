@@ -90,20 +90,22 @@ let find_delta m q v = match (List.filter(fun delta_fun->
 let rec chop_last_elem l = match (List.rev l) with h::t -> ((List.rev t),h);;
 
 let step_config m c = match c with (u,q,v) -> match v with
-	[] -> match (find_delta m q "_") with 
-		(bstate, read, estate, write, dir) -> 
-			match dir with 
-				Right -> (u@[write], estate, "_")
-				| Left ->  match (chop_last_elem u) with (newu, ulast) ->
-					(newu, estate, [ulast])
-	| v1::v' -> match (find_delta m q v1) with 
-		(bstate, read, estate, write, dir) ->
-			match dir with ->
+	[] -> (match (find_delta m q "_") with 
+		(bstate, read, estate, write, dir) -> (match dir with
+			Right -> (u@[write], estate, [])
+			| Left -> (match (chop_last_elem u) with (newu, ulast) ->
+					(newu, estate, ulast::[write]))))
+	| v1::v' -> (match (find_delta m q v1) with 
+		(bstate, read, estate, write, dir) -> (match dir with
 				Right -> (u@[write], estate, v')
-				| Left -> match (chop_last_elem u) with (newu, ulast) ->
-					(newu, estate, ulast::v');;
+				| Left -> (match (chop_last_elem u) with (newu, ulast) ->
+					(newu, estate, ulast::(write::v')))));;
 
-let run m w = failwith "Not implemented"
+let rec step_until_halt m c = if (print_config m c (halting_config m c)) 
+		then c 
+	else (step_until_halt m (step_config m c));;
+
+let run m w = accepting_config m (step_until_halt m (starting_config m w));;
 
 
 

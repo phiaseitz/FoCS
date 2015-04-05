@@ -83,3 +83,154 @@
 	
 	step_config anbn ([">";"X"], "q4", ["b"]);;
 	- : char list * string * char list = ([">"; "X"; "X"], "q2", [])
+
+1d
+	run asbs "aab";;
+	(start) > a a b
+	> (start) a a b
+	> a (start) a b
+	> a a (start) b
+	> a a b (q1)
+	> a a b _ (acc)
+	- : bool = true
+	
+	run anbn "aabb";;
+	(start) > a a b b
+	> (start) a a b b
+	> a (start) a b b
+	> a a (start) b b
+	> a a b (q1) b
+	5
+	> a a b b (q1)
+	> a a b b _ (q2)
+	> a a b b (q2) _ _
+	> a a b (q2) b _ _
+	> a a (q2) b b _ _
+	> a (q2) a b b _ _
+	> (q2) a a b b _ _
+	(q2) > a a b b _ _
+	> (q3) a a b b _ _
+	> X (q4) a b b _ _
+	> X a (q4) b b _ _
+	> X a X (q2) b _ _
+	> X a (q2) X b _ _
+	> X (q2) a X b _ _
+	> (q2) X a X b _ _
+	(q2) > X a X b _ _
+	> (q3) X a X b _ _
+	> X (q3) a X b _ _
+	> X X (q4) X b _ _
+	> X X X (q4) b _ _
+	> X X X X (q2) _ _
+	> X X X (q2) X _ _
+	> X X (q2) X X _ _
+	> X (q2) X X X _ _
+	> (q2) X X X X _ _
+	(q2) > X X X X _ _
+	> (q3) X X X X _ _
+	> X (q3) X X X _ _
+	> X X (q3) X X _ _
+	> X X X (q3) X _ _
+	> X X X X (q3) _ _
+	> X X X X _ (acc) _
+	- : bool = true
+	
+	run anbncn "aabbcc";;
+	(start) > a a b b c c
+	> (start) a a b b c c
+	> a (start) a b b c c
+	> a a (start) b b c c
+	> a a b (q1) b c c
+	> a a b b (q1) c c
+	> a a b b c (q6) c
+	> a a b b c c (q6)
+	> a a b b c c _ (q2)
+	> a a b b c c (q2) _ _
+	> a a b b c (q2) c _ _
+	> a a b b (q2) c c _ _
+	> a a b (q2) b c c _ _
+	> a a (q2) b b c c _ _
+	> a (q2) a b b c c _ _
+	> (q2) a a b b c c _ _
+	(q2) > a a b b c c _ _
+	> (q3) a a b b c c _ _
+	> X (q4) a b b c c _ _
+	> X a (q4) b b c c _ _
+	> X a X (q5) b c c _ _
+	> X a X b (q5) c c _ _
+	> X a X b X (q2) c _ _
+	> X a X b (q2) X c _ _
+	> X a X (q2) b X c _ _
+	> X a (q2) X b X c _ _
+	> X (q2) a X b X c _ _
+	> (q2) X a X b X c _ _
+	(q2) > X a X b X c _ _
+	> (q3) X a X b X c _ _
+	> X (q3) a X b X c _ _
+	> X X (q4) X b X c _ _
+	> X X X (q4) b X c _ _
+	> X X X X (q5) X c _ _
+	> X X X X X (q5) c _ _
+	> X X X X X X (q2) _ _
+	> X X X X X (q2) X _ _
+	> X X X X (q2) X X _ _
+	> X X X (q2) X X X _ _
+	> X X (q2) X X X X _ _
+	> X (q2) X X X X X _ _
+	> (q2) X X X X X X _ _
+	(q2) > X X X X X X _ _
+	> (q3) X X X X X X _ _
+	> X (q3) X X X X X _ _
+	> X X (q3) X X X X _ _
+	> X X X (q3) X X X _ _
+	> X X X X (q3) X X _ _
+	> X X X X X (q3) X _ _
+	> X X X X X X (q3) _ _
+	> X X X X X X _ (acc) _
+	- : bool = true
+	
+	run anbn "aabbbbb";;
+	(start) > a a b b b b b
+	> (start) a a b b b b b
+	> a (start) a b b b b b
+	> a a (start) b b b b b
+	> a a b (q1) b b b b
+	> a a b b (q1) b b b
+	> a a b b b (q1) b b
+	> a a b b b b (q1) b
+	> a a b b b b b (q1)
+	> a a b b b b b _ (q2)
+	> a a b b b b b (q2) _ _
+	> a a b b b b (q2) b _ _
+	> a a b b b (q2) b b _ _
+	> a a b b (q2) b b b _ _
+	> a a b (q2) b b b b _ _
+	> a a (q2) b b b b b _ _
+	> a (q2) a b b b b b _ _
+	> (q2) a a b b b b b _ _
+	(q2) > a a b b b b b _ _
+	> (q3) a a b b b b b _ _
+	> X (q4) a b b b b b _ _
+	> X a (q4) b b b b b _ _
+	> X a X (q2) b b b b _ _
+	> X a (q2) X b b b b _ _
+	> X (q2) a X b b b b _ _
+	> (q2) X a X b b b b _ _
+	(q2) > X a X b b b b _ _
+	> (q3) X a X b b b b _ _
+	> X (q3) a X b b b b _ _
+	> X X (q4) X b b b b _ _
+	> X X X (q4) b b b b _ _
+	> X X X X (q2) b b b _ _
+	> X X X (q2) X b b b _ _
+	> X X (q2) X X b b b _ _
+	> X (q2) X X X b b b _ _
+	> (q2) X X X X b b b _ _
+	(q2) > X X X X b b b _ _
+	> (q3) X X X X b b b _ _
+	> X (q3) X X X b b b _ _
+	> X X (q3) X X b b b _ _
+	> X X X (q3) X b b b _ _
+	> X X X X (q3) b b b _ _
+	> X X X X b (rej) b b _ _
+	- : bool = false
