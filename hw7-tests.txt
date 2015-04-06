@@ -100,7 +100,6 @@
 	> a (start) a b b
 	> a a (start) b b
 	> a a b (q1) b
-	5
 	> a a b b (q1)
 	> a a b b _ (q2)
 	> a a b b (q2) _ _
@@ -234,3 +233,16 @@
 	> X X X X (q3) b b b _ _
 	> X X X X b (rej) b b _ _
 	- : bool = false
+
+2a
+	run question2a "abab";;
+	run question2a "aabbaabb";;
+	run question2a "aaabbbaaabbb";;
+	run question2a "ababb";;
+
+2b
+	run question2b "aba";;
+	run question2b "aabbaaaa";;
+	run question2b "aaabbbaaaaaaaaa";;
+	run question2b "abbaa";;
+	run question2b "abbbaa";;
