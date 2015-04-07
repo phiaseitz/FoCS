@@ -292,38 +292,47 @@
 	(start) > 0 0 1 # 0 0 1 # 0 0 0
 	...
 	- : bool = true
-	# run binary_sum "011#001#000";;
+	
+	run binary_sum "011#001#000";;
 	(start) > 0 1 1 # 0 0 1 # 0 0 0
 	...
 	- : bool = false
-	# run binary_sum "010#001#001";;
+	
+	run binary_sum "010#001#001";;
 	(start) > 0 1 0 # 0 0 1 # 0 0 1
 	...
 	- : bool = true
-	# run binary_sum "011#001#001";;
+	
+	run binary_sum "011#001#001";;
 	(start) > 0 1 1 # 0 0 1 # 0 0 1
 	...
 	- : bool = false
-	# run binary_sum "110#001#001";;
+	
+	run binary_sum "110#001#001";;
 	(start) > 1 1 0 # 0 0 1 # 0 0 1
 	...
 	- : bool = false
-	# run binary_sum "110#101#001";;
+	
+	run binary_sum "110#101#001";;
 	(start) > 1 1 0 # 1 0 1 # 0 0 1
 	...
 	- : bool = true
-	# run binary_sum "111#101#010";;
+	
+	run binary_sum "111#101#010";;
 	(start) > 1 1 1 # 1 0 1 # 0 1 0
 	...
 	- : bool = true
-	# run binary_sum "111#101#10";;
+	
+	run binary_sum "111#101#10";;
 	(start) > 1 1 1 # 1 0 1 # 1 0
 	...
 	- : bool = false
-	# run binary_sum "11110#00111#10101";;
+	
+	run binary_sum "11110#00111#10101";;
 	(start) > 1 1 1 1 0 # 0 0 1 1 1 # 1 0 1 0 1
 	...
 	- : bool = false
-	# run binary_sum "11100#00111#10101";;
+	
+	run binary_sum "11100#00111#10101";;
 	...
 	- : bool = true
