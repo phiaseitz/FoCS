@@ -239,6 +239,7 @@
 	run question2a "aabbaabb";;
 	run question2a "aaabbbaaabbb";;
 	run question2a "ababb";;
+	run question2a "aaaabbbbbaaaaabbbbb";;
 
 2b
 	run question2b "aba";;
@@ -246,6 +247,7 @@
 	run question2b "aaabbbaaaaaaaaa";;
 	run question2b "abbaa";;
 	run question2b "abbbaa";;
+	run question2b "aaaaaaabbbbbaaaaaaaaaaaaaaaaaaaaaaaa";;
 
 3
 	run binary_sum "";;
@@ -336,3 +338,5 @@
 	run binary_sum "11100#00111#10101";;
 	...
 	- : bool = true
+
+	run binary_sum "1100010001110110#0110110001101100#0101101001011010";;
