@@ -348,18 +348,85 @@ let evenOddSequence_struct =
 let digits = ["0"; "1"; "2"; "3"; "4"; "5"; "6"; "7"; "8"; "9"]
 let isDigit c = List.mem c digits
 
-
 let triple =
-   (* FIX ME *)
-   { tm_states = [];
-     tm_input_alph = [];
-     tm_tape_alph = [];
-     tm_leftmost = "";
-     tm_blank = "";
-     tm_delta = [];
-     tm_start = ();
-     tm_accept = ();
-     tm_reject = () }
+  let delta (p,a) = 
+    match p,a with 
+      Simple("start"), ">" -> (Simple("d1"), ">", Right)
+
+      | Simple("d1"), d when isDigit d -> (Simple("u1"), d, Right)
+
+      | Simple("u1"), "#" -> (Simple("d2"), "#", Right)
+      | Simple("u1"), d when isDigit d -> (Simple("u1"), d, Right)
+
+      | Simple("d2"), d when isDigit d -> (Simple("u2"), d, Right)
+
+      | Simple("u2"), "#" -> (Simple("d3"), "#", Right)
+      | Simple("u2"), d when isDigit d -> (Simple("u2"), d, Right)
+
+      | Simple("d3"), d when isDigit d -> (Simple("u3"), d, Right)
+ 
+      | Simple("u3"), "_" -> (Simple("rew"), "_", Left)
+      | Simple("u3"), d when isDigit d -> (Simple("u3"), d, Right)
+
+      | Simple("rew"), ">" -> (Simple("x1"), ">", Right)
+      | Simple("rew"), sym -> (Simple("rew"), sym, Left)
+
+      | Simple("x1"), "#" -> (Simple("checkacc"), "#", Right)
+      | Simple("x1"), "X" -> (Simple("x1"), "X", Right)
+      | Simple("x1"), d when isDigit d -> (BitTag("tou2",d), "X", Right)
+
+      | BitTag("tou2", t), "#" -> (BitTag("x2", t), "#", Right)
+      | BitTag("tou2", t), d when isDigit d -> (BitTag("tou2", t), d, Right)
+
+      | BitTag("x2", t), "X" -> (BitTag("x2", t), "X", Right)
+      | BitTag("x2", t), di when di = t -> (BitTag("tou3", t), "X", Right)
+
+      | BitTag("tou3", t), "#" -> (BitTag("x3", t), "#", Right)
+      | BitTag("tou3", t), d when isDigit d -> (BitTag("tou3", t), d, Right)
+
+      | BitTag("x3", t), "X" -> (BitTag("x3", t), "X", Right)
+      | BitTag("x3", t), di when di = t -> (Simple("rew"), "X", Left)
+
+      | Simple("checkacc"), "#" -> (Simple("checkacc"), "#", Right)
+      | Simple("checkacc"), "X" -> (Simple("checkacc"), "X", Right)
+      | Simple("checkacc"), "_" -> (Simple("acc"), "_", Right)
+
+      | Simple("acc"), sym -> (Simple("acc"), sym, Right)
+
+      | _, sym -> (Simple("rej"), sym, Right) in
+
+    let states = [Simple("start"); Simple("d1"); Simple("u1"); Simple("d2"); 
+      Simple("u2"); Simple("d3"); Simple("u3"); Simple("rew"); Simple("x1"); 
+      BitTag("tou2", "0"); BitTag("tou2", "1"); BitTag("tou2", "3"); 
+      BitTag("tou2", "4"); BitTag("tou2", "5"); BitTag("tou2", "6");
+      BitTag("tou2", "7"); BitTag("tou2", "8"); BitTag("tou2", "9");
+      BitTag("x2", "0"); BitTag("x2", "1"); BitTag("x2", "2"); BitTag("x2", "3");
+      BitTag("x2", "4"); BitTag("x2", "5"); BitTag("x2", "6"); BitTag("x2", "7");
+      BitTag("x2", "7"); BitTag("x2", "9"); BitTag("tou3", "0"); 
+      BitTag("tou3", "0");BitTag("tou3", "1"); BitTag("tou3", "2"); 
+      BitTag("tou3", "3"); BitTag("tou3", "4"); BitTag("tou3", "5");
+      BitTag("tou3", "6"); BitTag("tou3", "7"); BitTag("tou3", "8");
+      BitTag("tou3", "9"); BitTag("x3", "0"); BitTag("x3", "1"); 
+      BitTag("x3", "2"); BitTag("x3", "3"); BitTag("x3", "4"); BitTag("x3", "5");
+      BitTag("x3", "6"); BitTag("x3", "7"); BitTag("x3", "8"); BitTag("x3", "9");
+      Simple("checkacc"); Simple("acc"); Simple("rej")] in
+
+    let alph = [">";"_";"#";"X"] @ digits in
+
+    let string_of st = 
+    match st with
+    | Simple(s) -> s
+    | BitTag(s,b) -> s^"|"^b  in
+    transform string_of
+     { tm_states = states;
+       tm_input_alph = "#"::digits;
+       tm_tape_alph = alph;
+       tm_leftmost = ">";
+       tm_blank = "_";
+       tm_delta = make_delta states alph delta;
+       tm_start = Simple("start");
+       tm_accept = Simple("acc");
+       tm_reject = Simple("rej") };;
    
 
 
