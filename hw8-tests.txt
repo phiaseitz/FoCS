@@ -66,7 +66,7 @@
 	
 	transform_delta f [];;
 	- : (string * ’a * string * ’b * ’c) list = []
-	
+	q
 	transform_delta f [(0,"a",1,"b",Right)];;
 	- : (string * string * string * string * direction) list =
 	[("zero", "a", "one", "b", Right)]
