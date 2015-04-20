@@ -19,6 +19,7 @@
  *      (where each character gets returned as a string)
  *
  *)
+#load "str.cma";;
 
 let explode_str (str) = 
   let rec acc (index,result) = 
@@ -124,14 +125,20 @@ let make_delta states alph f = List.fold_right (fun a delta ->
     match (f (state,a)) with (newState, write, dir) -> 
     (state,a,newState,write,dir)::stateDelt) states [])@delta) alph [];;
   
-let transform_states t states = List.fold_right (fun state newStates ->
-  (t state)::newStates) states [];;
+let transform_states t states = List.rev_map(fun state -> (t state)) states;;
+
+(* List.rev(List.) (fun state newStates ->
+  (t state)::newStates) states [] *)
 
 
 
-let transform_delta t delta = List.fold_right (fun oneDelta delta' ->
+(* let transform_delta t delta = List.map (fun oneDelta ->
   match oneDelta with (s1,input,s2,write,dir) -> 
-    ((t s1), input, (t s2), write, dir)::delta') delta [];;
+    ((t s1), input, (t s2), write, dir)) delta;; *)
+
+let transform_delta t delta = List.rev(List.rev_map (fun o_delta -> 
+  match o_delta with (s1,input,s2,write,dir) ->
+   ((t s1), input, (t s2), write, dir)) delta);;
 
 
 let transform t tm = 
@@ -578,65 +585,104 @@ type sim_state =
   | TagStatePush12 of string * string *string * string * string * string
   | TagStatePush2 of string * string * string * string * string
 
-
-
 let simulate2 tm2 = 
-    let dir_to_string dir = match dir with
-      Left -> "l"
-      | Right -> "r"
-      | Stay -> "s" in
+  let dir_to_string dir = match dir with
+    Left -> "l"
+    | Right -> "r"
+    | Stay -> "s" in
 
-    let string_to_dir s = if s = "l" then Left else Right in 
+  let string_to_dir s = match s with
+    "l" -> Left 
+    | "r" -> Right in 
 
-    let get_new_tag (q, a, b) = match (List.find(fun delta2 -> match delta2 with 
-      (qin, ain, bin, _,_, _, _, _) -> if ((q = qin) && (a = ain) && (b = bin)) 
-      then true else false) tm2.tm2_delta) with 
+  let get_new_tag (q, a, b) = match (List.find(fun delta2 -> match delta2 with 
+    (qin, ain, bin, _,_, _, _, _) -> if ((q = qin) && (a = ain) && (b = bin)) 
+    then true else false) tm2.tm2_delta) with 
 
-        (_,_,_,q',apush, bpush, adir, bdir) -> TagStatePush12("rew", q', apush, bpush, (dir_to_string adir), (dir_to_string bdir))
-      in 
+      (_,_,_,q',apush, bpush, adir, bdir) -> TagStatePush12("rew", q', apush, bpush, (dir_to_string adir), (dir_to_string bdir))
+    in 
 
-    let delta (p,a) = match p,a with
-    NoTag("start"), ">" -> (TagState("stacktapes","^>|^>"), ">", Right)
+  let delta (p,a) = match p,a with
+    NoTag("start"), ">" -> 
+      (TagState("stacktapes","^>|^>"), ">", Right)
 
-    | TagState("stacktapes", tag),"_" -> (TagState("rew", tm2.tm2_start), tag, Left) 
-    | TagState("stacktapes", tag),sym -> (TagState("stacktapes","*"^sym^"|*_"), tag, Right)
+    | TagState("stacktapes", tag),"*_|*_" -> 
+      (TagState("rew", pair.tm2_start), tag, Left) 
+    | TagState("stacktapes", tag),sym -> 
+      (TagState("stacktapes","*"^sym^"|*_"), tag, Right)
 
-    | TagState("rew", tm2state), sym when tm2state = tm2.tm2_accept -> (NoTag("acc"), sym, Right)
-    | TagState("rew", tm2state), sym when tm2state = tm2.tm2_reject -> (NoTag("rej"), sym, Right)
-    | TagState("rew", tm2state), ">" -> (TagState("scan1", tm2state), ">", Right)
-    | TagStateH1("rew", tm2state, h1sym), ">" -> (TagStateH1("scan2", tm2state, h1sym), ">", Right)
-    | TagStatePush12 ("rew", tm2state, h1sym, h2sym, dir1, dir2), ">" -> (TagStatePush12("scan1",tm2state, h1sym, h2sym, dir1, dir2), ">", Right) 
-    | TagStatePush2 ("rew", tm2state, h1sym, h2sym, dir2), ">" -> (TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), ">", Right) 
-    | TagState("rew", tm2state), sym ->  (TagState("rew", tm2state), sym, Left) 
-    | TagStateH1("rew", tm2state, h1sym), sym -> (TagStateH1("rew", tm2state, h1sym), sym, Left)
-    | TagStatePush12 ("rew", tm2state, h1sym, h2sym, dir1, dir2), sym -> (TagStatePush12 ("rew", tm2state, h1sym, h2sym, dir1, dir2), sym, Left)
-    | TagStatePush2 ("rew", tm2state, h1sym, h2sym, dir2), sym -> (TagStatePush2 ("rew", tm2state, h1sym, h2sym, dir2), sym, Left)
+    | TagState("rew", tm2state), sym when tm2state = pair.tm2_accept -> 
+      (NoTag("acc"), sym, Right)
+    | TagStateH1("rew", tm2state, h1sym), sym when tm2state = pair.tm2_accept -> 
+      (NoTag("acc"), sym, Right)
+    | TagStatePush12("rew", tm2state, h1sym, h2sym, dir1, dir2), sym when tm2state = pair.tm2_accept -> 
+      (NoTag("acc"), sym, Right) 
+    | TagStatePush2("rew", tm2state, h1sym, h2sym, dir2), sym when tm2state = pair.tm2_accept -> 
+      (NoTag("acc"), sym, Right)      
+    | TagState("rew", tm2state), sym when tm2state = pair.tm2_reject -> 
+      (NoTag("rej"), sym, Right)
+    | TagStateH1("rew", tm2state, h1sym), sym when tm2state = pair.tm2_reject -> 
+      (NoTag("rej"), sym, Right)
+    | TagStatePush12("rew", tm2state, h1sym, h2sym, dir1, dir2), sym when tm2state = pair.tm2_reject -> 
+      (NoTag("rej"), sym, Right) 
+    | TagStatePush2("rew", tm2state, h1sym, h2sym, dir2), sym when tm2state = pair.tm2_reject -> 
+      (NoTag("rej"), sym, Right)
+    | TagState("rew", tm2state), ">" -> 
+      (TagState("scan1", tm2state), ">", Right)
+    | TagStateH1("rew", tm2state, h1sym), ">" -> 
+      (TagStateH1("scan2", tm2state, h1sym), ">", Right)
+    | TagStatePush12 ("rew", tm2state, h1sym, h2sym, dir1, dir2), ">" -> 
+      (TagStatePush12("scan1",tm2state, h1sym, h2sym, dir1, dir2), ">", Right) 
+    | TagStatePush2 ("rew", tm2state, h1sym, h2sym, dir2), ">" -> 
+      (TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), ">", Right) 
+    | TagState("rew", tm2state), sym ->  
+      (TagState("rew", tm2state), sym, Left) 
+    | TagStateH1("rew", tm2state, h1sym), sym -> 
+      (TagStateH1("rew", tm2state, h1sym), sym, Left)
+    | TagStatePush12 ("rew", tm2state, h1sym, h2sym, dir1, dir2), sym -> 
+      (TagStatePush12 ("rew", tm2state, h1sym, h2sym, dir1, dir2), sym, Left)
+    | TagStatePush2 ("rew", tm2state, h1sym, h2sym, dir2), sym -> 
+      (TagStatePush2 ("rew", tm2state, h1sym, h2sym, dir2), sym, Left)
 
-    | TagState("scan1",tm2state), symstack when symstack.[0] = '^' -> (TagStateH1("rew", tm2state, (Char.escaped symstack.[1])), symstack, Left)
-    | TagState("scan1",tm2state), symstack when symstack.[0] = '*' -> (TagState("scan1", tm2state), symstack, Right)
-    | TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack when (symstack.[0] = '^' && dir1 = "s") -> 
-      (TagStatePush2("rew", tm2state, h1sym, h2sym, dir2), ((Str.string_before symstack 1)^h1sym^(Str.string_after symstack 1)), Left)
-    | TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack when symstack.[0] = '^' -> (TagStatePush12("sethead1", tm2state, h1sym, h2sym, dir1, dir2), 
-      ("*"^h1sym^(Str.string_after symstack 1)), (string_to_dir dir1))
-    | TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack when symstack.[0] = '*'  -> (TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), 
-      symstack, Right) 
+    | TagState("scan1", tm2state), symstack when ((String.length symstack) < 5) -> 
+      (NoTag("rej"), symstack, Right) 
+    | TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack when ((String.length symstack) < 5) -> 
+      (NoTag("rej"), symstack, Right)
+    | TagState("scan1",tm2state), symstack when (symstack.[0] = '^') -> 
+      (TagStateH1("rew", tm2state, (Char.escaped symstack.[1])), symstack, Left)
+    | TagState("scan1",tm2state), symstack when (symstack.[0] = '*') -> 
+      (TagState("scan1", tm2state), symstack, Right)
+    | TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack when ((symstack.[0] = '^') && (dir1 = "s")) -> 
+      (TagStatePush2("rew", tm2state, h1sym, h2sym, dir2), ((Str.string_before symstack 1)^h1sym^(Str.string_after symstack 2)), Left)
+    | TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack when (symstack.[0] = '^') -> 
+      (TagStatePush12("sethead1", tm2state, h1sym, h2sym, dir1, dir2), ("*"^h1sym^(Str.string_after symstack 2)), (string_to_dir dir1))
+    | TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack when (symstack.[0] = '*')  -> 
+      (TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack, Right) 
 
-    | TagStateH1("scan2", tm2state, h1sym), symstack when symstack.[3] = '^' -> (TagStateH12("transition",tm2state, h1sym, (Char.escaped symstack.[4])), symstack, Right)
-    | TagStateH1("scan2", tm2state, h1sym), symstack when symstack.[3] = '*' -> (TagStateH1("transition",tm2state, h1sym), symstack, Right)
-    | TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), symstack when (symstack.[0] = '^' && dir2 = "s" )-> 
+    | TagStateH1("scan2", tm2state, h1sym), symstack when ((String.length symstack) < 5) -> 
+      (NoTag("rej"), symstack, Right)
+    | TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), symstack when ((String.length symstack) < 5) -> 
+      (NoTag("rej"), symstack, Right)
+    | TagStateH1("scan2", tm2state, h1sym), symstack when (symstack.[3] = '^') -> 
+      (TagStateH12("transition",tm2state, h1sym, (Char.escaped symstack.[4])), symstack, Right)
+    | TagStateH1("scan2", tm2state, h1sym), symstack when (symstack.[3] = '*') -> 
+      (TagStateH1("transition",tm2state, h1sym), symstack, Right)
+    | TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), symstack when ((symstack.[3] = '^') && (dir2 = "s"))-> 
       (TagStateH12("transition", tm2state, h1sym, h2sym), ((Str.string_before symstack 4)^h2sym), Left)
-    | TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), symstack when symstack.[0] = '^' -> (TagStatePush2("sethead2", tm2state, h1sym, h2sym, dir2), 
+    | TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), symstack when (symstack.[3] = '^') -> (TagStatePush2("sethead2", tm2state, h1sym, h2sym, dir2), 
       ((Str.string_before symstack 3)^"*"^h2sym), (string_to_dir dir2))
-    | TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), symstack when symstack.[0] = '*'  -> (TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), 
+    | TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), symstack when (symstack.[3] = '*') -> (TagStatePush2("scan2", tm2state, h1sym, h2sym, dir2), 
       symstack, Right) 
 
-    | TagStateH12("transition", tm2state, h1sym, h2sym), symstack -> ((get_new_tag (tm2state,h1sym,h2sym)) , symstack, Left)
+    | TagStateH12("transition", tm2state, h1sym, h2sym), symstack when ((String.length symstack) = 5) -> ((get_new_tag (tm2state,h1sym,h2sym)) , symstack, Left)
 
-    | TagStatePush12("sethead1", tm2state, h1sym, h2sym, dir1, dir2), symstack -> (TagStatePush2("rew",tm2state, h1sym, h2sym, dir2), ("^"^(Str.string_after symstack 1)), Left)
+    | TagStatePush12("sethead1", tm2state, h1sym, h2sym, dir1, dir2), symstack when ((String.length symstack) = 5) -> 
+      (TagStatePush2("rew",tm2state, (Char.escaped symstack.[1]), h2sym, dir2), ("^"^(Str.string_after symstack 1)), Left)
     
-    | TagStatePush2("sethead2", tm2state, h1sym, h2sym, dir2), symstack -> 
-      (TagStateH12("transition",tm2state, h1sym, h2sym), ((Str.string_before symstack 3)^"^"^(Str.string_after symstack 3)), Right)
+    | TagStatePush2("sethead2", tm2state, h1sym, h2sym, dir2), symstack when ((String.length symstack) = 5) -> 
+      (TagStateH12("transition",tm2state, h1sym, (Char.escaped symstack.[4])), ((Str.string_before symstack 3)^"^"^(Str.string_after symstack 4)), Right)
 
+    | NoTag("acc"), sym -> (NoTag("acc"), sym, Right)
     | _, sym -> (NoTag("rej"), sym, Right) in
   let make_tiles_alph tape_alph = 
     List.fold_right(fun tape1 acc -> 
@@ -656,15 +702,83 @@ let simulate2 tm2 =
     | TagStatePush2(s,t1,p1,p2,d2) -> s^"-"^t1^"-"^p1^"-"^p2^"-"^d2
     | TagStatePush12(s,t1,p1,d1,p2,d2) -> s^"-"^t1^"-"^p1^"-"^d1^"-"^p2^"-"^d2 in 
 
-  let make_states tm2states,  
+  let make_no_tag_states base_states = List.map(fun state -> NoTag(state)) base_states in
+
+  let make_tag_states base_states tm2states = 
+    List.fold_right (fun bstat acc -> 
+      (List.fold_right (fun tm2s tags -> TagState(bstat,tm2s)::tags) 
+      tm2states []) @ acc)
+    base_states [] in
+
+  let make_tagH12_states base_states tm2states tm2alph = 
+    List.fold_right(fun base acc -> 
+      (List.fold_right (fun tm2s acc' -> 
+        (List.fold_right(fun h1 acc'' ->
+          (List.fold_right (fun h2 statesl -> TagStateH12(base, tm2s, h1, h2)::statesl) 
+          tm2alph [])@acc'')
+        tm2alph [])@acc')
+      tm2states [])@ acc)
+    base_states [] in
+
+  let make_tagH1_states base_states tm2states tm2alph = 
+    List.fold_right(fun base acc -> 
+      (List.fold_right (fun tm2s acc' -> 
+        (List.fold_right(fun h1 statesl -> TagStateH1(base, tm2s, h1)::statesl) 
+        tm2alph [])@acc')
+      tm2states [])@ acc)
+    base_states [] in
+
+  let make_push12_states base_states tm2states tm2alph =
+    List.fold_right(fun base acc -> 
+      (List.fold_right (fun tm2s acc' -> 
+        (List.fold_right(fun h1 acc'' ->
+          (List.fold_right (fun h2 acc''' -> 
+            (List.fold_right (fun d1 acc'''' -> (
+              List.fold_right (fun d2 statesl -> (TagStatePush12(base, tm2s, h1, h2, d1, d2))::statesl)
+              ["l"; "r"; "s"] [])@acc'''')
+            ["l"; "r"; "s"] [])@acc''')
+          tm2alph [])@acc'')
+        tm2alph [])@acc')
+      tm2states [])@ acc)
+    base_states [] in
+
+  let make_push2_states base_states tm2states tm2alph = 
+    List.fold_right(fun base acc -> 
+      (List.fold_right (fun tm2s acc' -> 
+        (List.fold_right(fun h1 acc'' ->
+          (List.fold_right (fun h2 acc''' -> 
+            (List.fold_right (fun d2 statesl -> (TagStatePush2(base, tm2s, h1, h2, d2))::statesl)
+            ["l"; "r"; "s"] [])@acc''')
+          tm2alph [])@acc'')
+        tm2alph [])@acc')
+      tm2states [])@ acc)
+    base_states [] in
+
+  let make_stack_tapes_states tm2alph = 
+    List.map(fun alph-> 
+      if alph = ">" then TagState("stacktapes", "^"^alph^"|^>")
+      else TagState("stacktapes", "*"^alph^"|*_")) ("*_|*_"::tm2alph) in
+
+  let make_states tm2states tm2alph = 
+    (make_no_tag_states ["start"; "acc"; "rej"])
+    @ (make_tag_states ["rew"; "scan1"] tm2alph) 
+    @ (make_tagH1_states ["rew";"scan2"] tm2states tm2alph) 
+    @ (make_tagH12_states ["transition"] tm2states tm2alph) 
+    @ (make_push12_states ["rew"; "scan1"; "sethead1"] tm2states tm2alph) 
+    @ (make_push2_states ["rew"; "scan2"; "sethead2"] tm2states tm2alph) 
+    @ (make_stack_tapes_states tm2alph) in
+
+  let states = make_states tm2.tm2_states tm2.tm2_tape_alph in
+
+  let alph = (make_tiles_alph tm2.tm2_tape_alph)@tm2.tm2_tape_alph in
 
   transform string_of
      { tm_states = states;
        tm_input_alph = tm2.tm2_input_alph;
-       tm_tape_alph = (make_tiles_alph tm2.tm2_tape_alph)@input_alph;
+       tm_tape_alph = alph;
        tm_leftmost = ">";
-       tm_blank = "_";
-       tm_delta = make_delta states alph delta;
+       tm_blank = "*_|*_";
+       tm_delta = (make_delta states alph delta);
        tm_start = NoTag("start");
        tm_accept = NoTag("acc");
        tm_reject = NoTag("rej") };;
