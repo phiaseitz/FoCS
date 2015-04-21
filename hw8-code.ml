@@ -7,7 +7,12 @@
 
    Email: Sophia.Seitz@students.olin.edu
 
-   Comments:
+   Comments: I used the following references for this homework:
+   http://caml.inria.fr/pub/docs/manual-caml-light/node14.17.html
+   http://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html
+   http://caml.inria.fr/pub/docs/manual-ocaml/libref/Char.html
+   http://caml.inria.fr/pub/docs/manual-ocaml/libref/String.html
+   http://caml.inria.fr/pub/docs/manual-ocaml/libref/Str.html
 
  *)
 
@@ -125,7 +130,7 @@ let make_delta states alph f = List.fold_right (fun a delta ->
     match (f (state,a)) with (newState, write, dir) -> 
     (state,a,newState,write,dir)::stateDelt) states [])@delta) alph [];;
   
-let transform_states t states = List.rev_map(fun state -> (t state)) states;;
+let transform_states t states = List.rev(List.rev_map(fun state -> (t state)) states);;
 
 (* List.rev(List.) (fun state newStates ->
   (t state)::newStates) states [] *)
@@ -655,7 +660,7 @@ let simulate2 tm2 =
     | TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack when ((symstack.[0] = '^') && (dir1 = "s")) -> 
       (TagStatePush2("rew", tm2state, h1sym, h2sym, dir2), ((Str.string_before symstack 1)^h1sym^(Str.string_after symstack 2)), Left)
     | TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack when (symstack.[0] = '^') -> 
-      (TagStatePush12("sethead1", tm2state, h1sym, h2sym, dir1, dir2), ("*"^h1sym^(Str.string_after symstack 2)), (string_to_dir dir1))
+      (TagStatePush2("sethead1", tm2state, h1sym, h2sym, dir2), ("*"^h1sym^(Str.string_after symstack 2)), (string_to_dir dir1))
     | TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack when (symstack.[0] = '*')  -> 
       (TagStatePush12("scan1", tm2state, h1sym, h2sym, dir1, dir2), symstack, Right) 
 
@@ -676,7 +681,7 @@ let simulate2 tm2 =
 
     | TagStateH12("transition", tm2state, h1sym, h2sym), symstack when ((String.length symstack) = 5) -> ((get_new_tag (tm2state,h1sym,h2sym)) , symstack, Left)
 
-    | TagStatePush12("sethead1", tm2state, h1sym, h2sym, dir1, dir2), symstack when ((String.length symstack) = 5) -> 
+    | TagStatePush2("sethead1", tm2state, h1sym, h2sym, dir2), symstack when ((String.length symstack) = 5) -> 
       (TagStatePush2("rew",tm2state, (Char.escaped symstack.[1]), h2sym, dir2), ("^"^(Str.string_after symstack 1)), Left)
     
     | TagStatePush2("sethead2", tm2state, h1sym, h2sym, dir2), symstack when ((String.length symstack) = 5) -> 
@@ -764,8 +769,8 @@ let simulate2 tm2 =
     @ (make_tag_states ["rew"; "scan1"] tm2alph) 
     @ (make_tagH1_states ["rew";"scan2"] tm2states tm2alph) 
     @ (make_tagH12_states ["transition"] tm2states tm2alph) 
-    @ (make_push12_states ["rew"; "scan1"; "sethead1"] tm2states tm2alph) 
-    @ (make_push2_states ["rew"; "scan2"; "sethead2"] tm2states tm2alph) 
+    @ (make_push12_states ["rew"; "scan1"] tm2states tm2alph) 
+    @ (make_push2_states ["rew"; "scan2"; "sethead2";"sethead1"] tm2states tm2alph) 
     @ (make_stack_tapes_states tm2alph) in
 
   let states = make_states tm2.tm2_states tm2.tm2_tape_alph in
