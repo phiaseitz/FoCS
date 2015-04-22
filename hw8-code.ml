@@ -132,15 +132,6 @@ let make_delta states alph f = List.fold_right (fun a delta ->
   
 let transform_states t states = List.rev(List.rev_map(fun state -> (t state)) states);;
 
-(* List.rev(List.) (fun state newStates ->
-  (t state)::newStates) states [] *)
-
-
-
-(* let transform_delta t delta = List.map (fun oneDelta ->
-  match oneDelta with (s1,input,s2,write,dir) -> 
-    ((t s1), input, (t s2), write, dir)) delta;; *)
-
 let transform_delta t delta = List.rev(List.rev_map (fun o_delta -> 
   match o_delta with (s1,input,s2,write,dir) ->
    ((t s1), input, (t s2), write, dir)) delta);;
