@@ -189,7 +189,28 @@ let rec running_max s =
  * 
  *)
 
-let rec arctan z = failwith "arctan not implemented"
+let scalef n s = map (fun x -> n*.x) s;;
+
+let rec addf s1 s2 = 
+  fby ((head s1) +. (head s2))
+    (fun () -> (addf (tail s1) (tail s2)));;
+
+let rec psumsf s = 
+  fby (head s) 
+    (fun ()-> addf (tail s) (psumsf (s)));;
+
+let rec oddpows x =  
+  fby (x)
+  (fun () -> scalef (x*.x) (oddpows x));;
+
+
+let rec pows x = 
+  fby (x)
+  (fun () -> scalef (x) (pows x));;
+
+  
+
+let rec arctan z = 
 
 let pi () = failwith "pi not implemented"
     
