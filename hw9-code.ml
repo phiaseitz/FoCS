@@ -254,10 +254,26 @@ let rec limit mx eps s =
  * 
  *)
 
-let rec table s1 s2 = failwith "table not implemented"
+let rec table s1 s2 = 
+  fby (map (fun s2e -> ((head  s1), s2e)) s2)
+    (fun () ->  table (tail s1) s2);;
 
-let rec stripes s = failwith "stripes not implemented"
+let rec zipCons s t = 
+  fby ((head s)::(head t))
+    (fun () -> zipCons (tail s) (tail t));;
 
-let rec flatten s = failwith "flatten not implemented"
+let rec stripes s = 
+  zipCons 
+    (head s) 
+    (fby ([]) 
+      (fun () -> stripes (tail s)));;
 
-let pairs s1 s2 = failwith "pairs not implemented"
+let rec flatten s = match (head s) with 
+  [] -> flatten (tail s)
+  | h::t -> (fby (h)
+    (fun () -> (flatten (fby (t)
+      (fun () -> (tail s))))));;
+  
+
+
+let pairs s1 s2 = flatten(stripes(table  s1 s2));
