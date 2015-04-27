@@ -195,31 +195,56 @@ let rec addf s1 s2 =
   fby ((head s1) +. (head s2))
     (fun () -> (addf (tail s1) (tail s2)));;
 
+let rec subf s1 s2 = 
+  fby ((head s1) -. (head s2))
+    (fun () -> (subf (tail s1) (tail s2)));;
+
 let rec psumsf s = 
   fby (head s) 
     (fun ()-> addf (tail s) (psumsf (s)));;
 
 let rec divf s1 s2 = 
-  fby ((head s1) /. float((head s2)))
+  fby ((head s1) /. (head s2))
     (fun () -> (divf (tail s1) (tail s2)));;
+
+let rec multf s1 s2 = 
+  fby ((head s1) *. (head s2))
+    (fun () -> (multf (tail s1) (tail s2)));;
 
 let rec taylorxs z = 
   fby z
     (fun () -> scalef (-1.0*.z*.z) (taylorxs z));;
  
-let arctantaylorterms z =  (divf (taylorxs z) (odds));; 
+let arctantaylorterms z =  divf (taylorxs z) (map (fun o -> float(o)) odds);; 
 
-let arctan z = psumsf (divf (taylorxs z) (odds));;
+let arctan z = psumsf (divf (taylorxs z) (map (fun o -> float(o)) odds));;
 
 let pi () = addf (scalef 16.0 (arctan (1.0/.5.0)))
   (scalef (-4.0) (arctan (1.0/.239.0)));;
 
     
-let rec newton f df guess = failwith "newton not implemented"
+let rec newton f df guess = 
+  fby guess
+    (fun () -> (newton f df (guess -. (f guess)/.(df guess))));;
 
-let derivative f x = failwith "derivative not implemented"
+let derivative f x = 
+  divf
+    (subf 
+      (map f (addf (const x)(map (fun x -> 1./.float(x)) (from 1))))
+      (map f (const x)))
+    (map (fun x -> 1./.float(x)) (from 1));;
 
-let limit mx eps s = failwith "limit not implemented"
+
+
+let rec limit mx eps s = 
+  if mx > 0 then 
+    if abs_float((head s) -. (head (tail s))) < eps then
+      Some (head (tail s))
+    else 
+      limit (mx -1) eps (tail s)
+  else 
+    None;;
+  
 
 
 
