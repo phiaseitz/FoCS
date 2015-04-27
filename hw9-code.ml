@@ -199,20 +199,21 @@ let rec psumsf s =
   fby (head s) 
     (fun ()-> addf (tail s) (psumsf (s)));;
 
-let rec oddpows x =  
-  fby (x)
-  (fun () -> scalef (x*.x) (oddpows x));;
+let rec divf s1 s2 = 
+  fby ((head s1) /. float((head s2)))
+    (fun () -> (divf (tail s1) (tail s2)));;
 
+let rec taylorxs z = 
+  fby z
+    (fun () -> scalef (-1.0*.z*.z) (taylorxs z));;
+ 
+let arctantaylorterms z =  (divf (taylorxs z) (odds));; 
 
-let rec pows x = 
-  fby (x)
-  (fun () -> scalef (x) (pows x));;
+let arctan z = psumsf (divf (taylorxs z) (odds));;
 
-  
+let pi () = addf (scalef 16.0 (arctan (1.0/.5.0)))
+  (scalef (-4.0) (arctan (1.0/.239.0)));;
 
-let rec arctan z = 
-
-let pi () = failwith "pi not implemented"
     
 let rec newton f df guess = failwith "newton not implemented"
 
