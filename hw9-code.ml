@@ -170,9 +170,11 @@ let rec merge s1 s2 =
     (fun () -> fby (head s2) 
       (fun ()-> merge (tail s1) (tail s2)));;
 
+let rec addn n s = map (fun x -> n + x) s;;
+
 let rec psums s = 
   fby (head s) 
-    (fun ()-> add (tail s) (psums (s)));;
+    (fun ()-> addn(head s) (psums (tail s)));; 
 
 let rec greater s1 s2 =
   fby (if (head s1) > (head s2) then (head s1) else (head s2))
@@ -199,9 +201,11 @@ let rec subf s1 s2 =
   fby ((head s1) -. (head s2))
     (fun () -> (subf (tail s1) (tail s2)));;
 
+let rec addnf n s = map (fun x -> n +. x) s;;
+
 let rec psumsf s = 
   fby (head s) 
-    (fun ()-> addf (tail s) (psumsf (s)));;
+    (fun ()-> addnf(head s) (psumsf (tail s)));; 
 
 let rec divf s1 s2 = 
   fby ((head s1) /. (head s2))
