@@ -3,9 +3,9 @@
    Homework 9 code
 
 
-   Name:
+   Name: Sophia Seitz
 
-   Email:
+   Email: sophia.seitz@students.olin.edu
 
    Comments:
 
